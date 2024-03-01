@@ -1,1 +1,1 @@
-# Struktury-danych
+# Projekt z przedmiotu Struktury Danych
