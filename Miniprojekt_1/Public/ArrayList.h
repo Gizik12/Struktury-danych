@@ -17,6 +17,9 @@ public:
 	// Dodaje element na początku tablicy.
 	void AddInFront(DataType Element);
 
+	// Dodaje element w wybrane miejsce tablicy.
+	void AddToIndex(DataType Element, int Index);
+
 	// Zwraca liczbę elementów w tablicy.
 	int GetSize() const { return m_Size; }
 
@@ -79,11 +82,26 @@ inline void ArrayList<DataType, Capacity>::AddInFront(DataType Element)
 }
 
 template<typename DataType, unsigned int Capacity>
+inline void ArrayList<DataType, Capacity>::AddToIndex(DataType Element, int Index)
+{
+	if (m_Size == m_Capacity) // Jeśli tablica jest zapełniona
+	{
+		DoubleTheCapacity(); // Dwukrotnie zwiększ pojemność.
+	}
+	for (int i = m_Size; i > Index; i--)
+	{
+		m_Elements[i] = m_Elements[i - 1];
+	}
+	m_Elements[Index] = Element;
+	++m_Size;
+}
+
+template<typename DataType, unsigned int Capacity>
 inline void ArrayList<DataType, Capacity>::DoubleTheCapacity()
 {
 	m_Capacity *= 2;
 	DataType* ResizedArray = new DataType[m_Capacity]; // Utworzenie tablicy pomocniczej.
-	for (int i = 0; i < GetSize(); i++)
+	for (int i = 0; i < m_Size; i++)
 	{
 		ResizedArray[i] = m_Elements[i];
 	}
