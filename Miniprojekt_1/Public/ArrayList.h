@@ -20,6 +20,9 @@ public:
 	// Dodaje element w wybrane miejsce tablicy.
 	void AddToIndex(DataType Element, int Index);
 
+	// Szuka podanego elementu w tablicy i zwraca indeks jego pierwszej instancji.
+	int SearchForFirstInstance(DataType Element);
+
 	// Zwraca liczbę elementów w tablicy.
 	int GetSize() const { return m_Size; }
 
@@ -69,13 +72,13 @@ inline void ArrayList<DataType, Capacity>::Add(DataType Element)
 template<typename DataType, unsigned int Capacity>
 inline void ArrayList<DataType, Capacity>::AddInFront(DataType Element)
 {
-	if (m_Size == m_Capacity) // Jeśli tablica jest zapełniona
+	if (m_Size == m_Capacity) // Jeśli tablica jest zapełniona.
 	{
 		DoubleTheCapacity(); // Dwukrotnie zwiększ pojemność.
 	}
 	for (int i = m_Size; i > 0; i--)
 	{
-		m_Elements[i] = m_Elements[i - 1];
+		m_Elements[i] = m_Elements[i - 1]; // Przesunięcie wszystkich elementów w prawo.
 	}
 	m_Elements[0] = Element;
 	++m_Size;
@@ -84,16 +87,30 @@ inline void ArrayList<DataType, Capacity>::AddInFront(DataType Element)
 template<typename DataType, unsigned int Capacity>
 inline void ArrayList<DataType, Capacity>::AddToIndex(DataType Element, int Index)
 {
-	if (m_Size == m_Capacity) // Jeśli tablica jest zapełniona
+	if (m_Size == m_Capacity) // Jeśli tablica jest zapełniona.
 	{
 		DoubleTheCapacity(); // Dwukrotnie zwiększ pojemność.
 	}
 	for (int i = m_Size; i > Index; i--)
 	{
-		m_Elements[i] = m_Elements[i - 1];
+		m_Elements[i] = m_Elements[i - 1]; // Przesunięcie elementów o indeksie większym lub równym od podanego w prawo.
 	}
 	m_Elements[Index] = Element;
 	++m_Size;
+}
+
+template<typename DataType, unsigned int Capacity>
+inline int ArrayList<DataType, Capacity>::SearchForFirstInstance(DataType Element)
+{
+	for (int i = 0; i < m_Size; i++)
+	{
+		if (m_Elements[i] == Element)
+		{
+			return i; // Zwraca indeks pierwszej instancji szukanego elementu.
+		}
+	}
+
+	return -1; // Zwraca błąd/Brak podanego elementu w tablicy.
 }
 
 template<typename DataType, unsigned int Capacity>
