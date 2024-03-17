@@ -70,10 +70,12 @@ inline void ArrayList<DataType, Capacity>::AddInFront(DataType Element)
 	{
 		DoubleTheCapacity(); // Dwukrotnie zwiększ pojemność.
 	}
-	
-	// TODO: Przesunąć każdy element w tablicy o 1
-	// i wstawić Element do m_Elements[0].
-
+	for (int i = m_Size; i > 0; i--)
+	{
+		m_Elements[i] = m_Elements[i - 1];
+	}
+	m_Elements[0] = Element;
+	++m_Size;
 }
 
 template<typename DataType, unsigned int Capacity>
