@@ -1,5 +1,5 @@
 #include <iostream>
-#include "ArrayList.h"
+#include "Public/ArrayList.h"
 
 using namespace std;
 

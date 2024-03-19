@@ -43,14 +43,14 @@ private:
 
 
 template<typename DataType, unsigned int Capacity>
-inline ArrayList<DataType, Capacity>::ArrayList()
+ArrayList<DataType, Capacity>::ArrayList()
 	: m_Size(0), m_Capacity(Capacity), m_Elements(nullptr)
 {
 	m_Elements = new DataType[m_Capacity];
 }
 
 template<typename DataType, unsigned int Capacity>
-inline ArrayList<DataType, Capacity>::~ArrayList()
+ArrayList<DataType, Capacity>::~ArrayList()
 {
 	if (m_Elements != nullptr)
 	{
@@ -59,7 +59,7 @@ inline ArrayList<DataType, Capacity>::~ArrayList()
 }
 
 template<typename DataType, unsigned int Capacity>
-inline void ArrayList<DataType, Capacity>::Add(DataType Element)
+void ArrayList<DataType, Capacity>::Add(DataType Element)
 {
 	if (m_Size == m_Capacity) // Jeśli tablica jest zapełniona.
 	{
@@ -70,7 +70,7 @@ inline void ArrayList<DataType, Capacity>::Add(DataType Element)
 }
 
 template<typename DataType, unsigned int Capacity>
-inline void ArrayList<DataType, Capacity>::AddInFront(DataType Element)
+void ArrayList<DataType, Capacity>::AddInFront(DataType Element)
 {
 	if (m_Size == m_Capacity) // Jeśli tablica jest zapełniona.
 	{
@@ -85,7 +85,7 @@ inline void ArrayList<DataType, Capacity>::AddInFront(DataType Element)
 }
 
 template<typename DataType, unsigned int Capacity>
-inline void ArrayList<DataType, Capacity>::AddToIndex(DataType Element, int Index)
+void ArrayList<DataType, Capacity>::AddToIndex(DataType Element, int Index)
 {
 	if (m_Size == m_Capacity) // Jeśli tablica jest zapełniona.
 	{
@@ -100,7 +100,7 @@ inline void ArrayList<DataType, Capacity>::AddToIndex(DataType Element, int Inde
 }
 
 template<typename DataType, unsigned int Capacity>
-inline int ArrayList<DataType, Capacity>::SearchForFirstInstance(DataType Element)
+int ArrayList<DataType, Capacity>::SearchForFirstInstance(DataType Element)
 {
 	for (int i = 0; i < m_Size; i++)
 	{
@@ -114,7 +114,7 @@ inline int ArrayList<DataType, Capacity>::SearchForFirstInstance(DataType Elemen
 }
 
 template<typename DataType, unsigned int Capacity>
-inline void ArrayList<DataType, Capacity>::DoubleTheCapacity()
+void ArrayList<DataType, Capacity>::DoubleTheCapacity()
 {
 	m_Capacity *= 2;
 	DataType* ResizedArray = new DataType[m_Capacity]; // Utworzenie tablicy pomocniczej.
