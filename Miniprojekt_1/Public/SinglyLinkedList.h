@@ -159,12 +159,6 @@ void SinglyLinkedList<DataType>::popBack()
 		{
 			currentNode = currentNode->next;
 		}
-   		SinglyLinkedList<DataType>* currentNode = this->firstElement;
-    	while (currentNode->getNext()->getNext() != nullptr) // Pętla znajduje przedostatni element.
-    	{
-        	currentNode = currentNode->getNext();
-    	}
-
     	delete currentNode->getNext(); // Usuwa ostatni element.
     	currentNode->getNext() = nullptr; // Ustawia wskaźnik next ostatniego elementu na nullptr.
     	m_Size--;
