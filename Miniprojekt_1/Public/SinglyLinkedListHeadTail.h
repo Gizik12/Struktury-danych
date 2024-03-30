@@ -10,6 +10,10 @@ class Node
 	Node* next; 	// Wskaźnik na następny element.
 
 	public:
+    void setNext(Node* m)
+    {
+        this->next = m;
+    }
 	Node* getNext()
 	{
 		return this->next;
@@ -26,7 +30,8 @@ class SinglyLinkedList
 {
     private:
 	unsigned int m_Size;	// Liczba elementów w tablicy.
-	Node<DataType>* firstElemehnt;		// Wskaźnik na pierwszy element tablicy.
+	Node<DataType>* head;	// Wskaźnik na pierwszy element tablicy.
+    Node<DataType>* tail;   // Wskaźnik na ostatni element tablicy.
 
     public:
 	// Konstruktor
@@ -61,7 +66,8 @@ template<typename DataType>
 SinglyLinkedList<DataType>::SinglyLinkedList()
 {
 	this->m_Size = 0;
-	this->firstElement= nullptr;
+	this->head = nullptr;
+    this->tail = nullptr;
 }
 
 template<typename DataType>
@@ -79,12 +85,12 @@ void SinglyLinkedList<DataType>::pushFront(DataType Element)
 	Node<DataType>* newNode = new Node<DataType>(Element); // Tworzenie nowego węzła z podanym elementem.
 	if (this->m_Size == 0)
 	{
-		this->firstElement = newNode;
+		this->head, this->tail = newNode;
 	}
 	else
 	{
-		newNode->getNext() = this->firstElement; // Ustawienie wskaźnika next nowego węzła na obecny pierwszy element.
-		this->firstElement = newNode; 		// Nowy węzeł staje się pierwszym elementem listy.
+		newNode->setNext(this->head); // Ustawienie wskaźnika next nowego węzła na obecny pierwszy element.
+		this->head = newNode; 		// Nowy węzeł staje się pierwszym elementem listy.
     }
 	this->m_Size++;
 }
@@ -95,16 +101,13 @@ void SinglyLinkedList<DataType>::pushBack(DataType Element)
 	Node<DataType>* newNode = new Node<DataType>(Element); // Tworzenie nowego węzła z podanym elementem.
 	if (this->m_Size == 0)
 	{
-		this->firstElement = newNode;
+		this->head, this->tail = newNode;
 	}
 	else
 	{
-		Node<DataType>* currentNode = this->firstElement;
-		while (currentNode->next != nullptr) // Pętla szukająca ostaniego elementu listy.
-		{
-			currentNode = currentNode->getNext(); // Przechodzi dalej po kolejnych elementach listy.
-		}
-		currentNode->getNext() = newNode; // Ustawienie wskaźnika ostatniego elementu na nowy ostatni element.
+		Node<DataType>* currentNode = this->tail;
+        currentNode->setNext(newNode);
+        this->tail = newNode;
 	}
 	this->m_Size++;
 }
@@ -123,13 +126,13 @@ void SinglyLinkedList<DataType>::addAtIndex(DataType Element, unsigned int Index
 		return;
 	}
 	Node<DataType>* newNode = new Node<DataType>(Element); // Tworzenie nowego węzła z podanym elementem.
-	Node<DataType>* currentNode = this->firstElement;
+	Node<DataType>* currentNode = this->head;
 	for (unsigned int i = 0; i < Index - 1; i++) // Przesuń się do elementu poprzedzającego wstawiany indeks.
     {
         currentNode = currentNode->getNext();
     }
-	newNode->getNext() = currentNode->getNext(); // Nowy element wskazuje na następny element.
-    currentNode->getNext() = newNode; // Poprzedni element wskazuje na nowy element.
+	newNode->setNext(currentNode->getNext()); // Nowy element wskazuje na następny element.
+    currentNode->setNext(newNode); // Poprzedni element wskazuje na nowy element.
 	this->m_Size++;
 	
 }
@@ -139,8 +142,8 @@ void SinglyLinkedList<DataType>::popFront()
 {
 	if (this->m_Size != 0)
 	{
-		Node<DataType>* currentNode = this->firstElement;
-		this->firstElement = this->firstElement->getNext(); // Przesuwa wskaźnik na pierwszy element na następny.
+		Node<DataType>* currentNode = this->head;
+		this->head = this->head->getNext(); // Przesuwa wskaźnik na pierwszy element na następny.
 		delete currentNode; // Usuwa pierwszy element.
 		this->m_Size--; // Zmniejsz licznik elementów.
 	}
@@ -153,20 +156,24 @@ void SinglyLinkedList<DataType>::popBack()
 	{
 		if (this->m_Size == 1)
 		{
-			delete this->firstElement;
-        	this->firstElement = nullptr;
+			delete this->head;
+            delete this->tail;
+        	this->head, this->tail = nullptr;
         	this->m_Size = 0;
         	return;
 		}
-   		Node<DataType>* currentNode = this->firstElement;
-    	while (currentNode->getNext()->getNext() != nullptr) // Pętla znajduje przedostatni element.
-    	{
-        	currentNode = currentNode->getNext();
-    	}
-
-    	delete currentNode->getNext(); // Usuwa ostatni element.
-    	currentNode->getNext() = nullptr; // Ustawia wskaźnik next ostatniego elementu na nullptr.
-    	m_Size--;
+        else
+        {
+            Node<DataType>* currentNode = this->head;
+            while (currentNode->getNext()->getNext() != nullptr) // Pętla znajduje przedostatni element.
+            {
+                currentNode->setNext(currentNode->getNext());
+            }
+            delete currentNode->getNext(); // Usuwa ostatni element.
+            this->tail = currentNode; // Ustwaia wskaźnik tail na ostatni element.
+            currentNode->setNext(nullptr); // Ustawia wskaźnik next ostatniego elementu na nullptr.
+            m_Size--;
+        }
 	}
 }
 
@@ -183,18 +190,23 @@ void SinglyLinkedList<DataType>::subtractAtIndex(unsigned int Index)
 		if (Index == 0) // Jeśli indeks jest równy 0 usuwamy element na początku tablicy.
 		{
 			popFront();
-			return;
 		}
-		Node<DataType>* currentNode = this->firstElement;
-		for (unsigned int i = 0; i < Index - 1; i++) // Przesuwamy się do elementu poprzedzającego wstawiany indeks.
-		{
-			currentNode = currentNode->getNext();
-		}
-
-		Node<DataType>* temp = currentNode->getNext(); // Zachowaj wskaźnik do elementu, który chcemy usunąć.
-		currentNode->getNext() = temp->getNext(); // Zaktualizuj wskaźnik poprzedniego elementu, aby ominąć element, który usuwamy.
-		delete temp; // Usuń element z listy.
-		m_Size--; // Zmniejsz licznik elementów.
+        else if (Index == this->m_Size -1)
+        {
+            popBack();
+        }
+        else
+        {
+            Node<DataType>* currentNode = this->head;
+            for (unsigned int i = 0; i < Index - 1; i++) // Przesuwamy się do elementu poprzedzającego wstawiany indeks.
+            {
+                currentNode = currentNode->getNext();
+            }
+            Node<DataType>* temp = currentNode->getNext(); // Zachowaj wskaźnik do elementu, który chcemy usunąć.
+            currentNode->getNext() = temp->getNext(); // Zaktualizuj wskaźnik poprzedniego elementu, aby ominąć element, który usuwamy.
+            delete temp; // Usuń element z listy.
+            m_Size--; // Zmniejsz licznik elementów. 
+        }
 	}
 }
 #endif
