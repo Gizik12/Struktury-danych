@@ -1,4 +1,3 @@
-#include <iostream>
 #ifndef DATA_STRUCTURE
 #define DATA_STRUCTURE
 
