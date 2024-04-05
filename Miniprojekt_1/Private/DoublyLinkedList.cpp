@@ -1,2 +1,2 @@
-#include "DoublyLinkedList.h"
+#include "../Public/DoublyLinkedList.h"
 

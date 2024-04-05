@@ -1,9 +1,10 @@
+#include "DataStructure.h"
 #ifndef DOUBLY_LINKED_LIST
 #define DOUBLY_LINKED_LIST
 
 // Węzeł
 template<typename DataType>
-class DoublyLinkedList_Node
+class DoublyLinkedList_Node final
 {
 public:
 	// Konstruktor.
@@ -32,7 +33,7 @@ private:
 
 // Lista
 template<typename DataType>
-class DoublyLinkedList
+class DoublyLinkedList final : public DataStructure<DataType>
 {
 public:
 	// Konstruktor.
@@ -42,37 +43,28 @@ public:
 	~DoublyLinkedList();
 
 	// Dodaje węzeł na początku listy.
-	void PushFront(DataType Element);
+	virtual void PushFront(DataType Element) override;
 
 	// Dodaje węzeł na końcu listy.
-	void PushBack(DataType Element);
+	virtual void PushBack(DataType Element) override;
 
 	// Usuwa węzeł na początku listy.
-	void PopFront();
+	virtual void PopFront() override;
 
 	// Usuwa węzeł na końcu listy.
-	void PopBack();
+	virtual void PopBack() override;
 
-	// Dodaje węzeł przed wybranym miejscem na liście.
-	void InsertBefore(DataType Element, unsigned int Index);
-
-	// Dodaje węzeł po wybranym miejscu na liście.
-	void InsertAfter(DataType Element, unsigned int Index);
+	// Dodaje węzeł w wybrane miejsce na liście.
+	virtual void Insert(DataType Element, unsigned int Index) override;
 
 	// Usuwa węzeł na określonej pozycji listy.
-	void RemoveAt(unsigned int Index);
+	virtual void RemoveAt(unsigned int Index) override;
 
 	// Szuka podanego elementu w tablicy i zwraca adres jego pierwszej instancji.
 	DoublyLinkedList_Node<DataType>* SearchForward(DataType Element);
 
 	// Szuka podanego elementu w tablicy i zwraca adres jego pierwszej instancji.
 	DoublyLinkedList_Node<DataType>* SearchBackward(DataType Element);
-
-	// Sprawdza czy tablica jest pusta.
-	bool IsEmpty() { return m_Size ? false : true; }
-
-	// Zwraca liczbę elementów w tablicy.
-	int GetSize() const { return m_Size; }
 
 	// Zwraca "głowę" listy.
 	DoublyLinkedList_Node<DataType>* GetHeadNode() const { return m_HeadNode; }
@@ -87,7 +79,6 @@ public:
 	void SetTailNode(DoublyLinkedList_Node<DataType>* TailNode) { m_TailNode = TailNode; }
 
 private:
-	unsigned int m_Size;							// Liczba elementów na liście.
 	DoublyLinkedList_Node<DataType>* m_HeadNode;	// Pierwszy element listy.
 	DoublyLinkedList_Node<DataType>* m_TailNode;	// Ostatni element listy.
 
@@ -101,16 +92,31 @@ DoublyLinkedList_Node<DataType>::DoublyLinkedList_Node(DataType Data)
 
 template<typename DataType>
 DoublyLinkedList<DataType>::DoublyLinkedList()
-	: m_Size(0), m_HeadNode(nullptr), m_TailNode(nullptr) { }
+	: m_HeadNode(nullptr), m_TailNode(nullptr) { }
 
 template<typename DataType>
-DoublyLinkedList<DataType>::~DoublyLinkedList() { }
+DoublyLinkedList<DataType>::~DoublyLinkedList() 
+{ 
+	if (!DataStructure<DataType>::IsEmpty())
+	{
+		DoublyLinkedList_Node<DataType>* CurrentNode;
+
+		do
+		{
+			CurrentNode = m_HeadNode;
+			m_HeadNode = m_HeadNode->GetNextNode();
+			delete CurrentNode;
+		} while (m_HeadNode->GetNextNode() != nullptr);
+
+		delete m_HeadNode;
+	}
+}
 
 template<typename DataType>
 void DoublyLinkedList<DataType>::PushFront(DataType Element)
 {
 	DoublyLinkedList_Node<DataType>* NewNode = new DoublyLinkedList_Node<DataType>(Element); // Utworzenie nowego węzła.
-	if (IsEmpty())
+	if (DataStructure<DataType>::IsEmpty())
 	{
 		m_TailNode = NewNode; // Jeśli lista jest pusta ustawia NewNode również jako m_TailNode.
 	}
@@ -120,14 +126,14 @@ void DoublyLinkedList<DataType>::PushFront(DataType Element)
 		m_HeadNode->SetPreviousNode(NewNode);	// Poprzednim węzłem bieżącego HeadNode jest NewNode.
 	}
 	m_HeadNode = NewNode; // NewNode zostaje ustawiony jako nowy HeadNode.
-	++m_Size;
+	++DataStructure<DataType>::m_Size;
 }
 
 template<typename DataType>
 void DoublyLinkedList<DataType>::PushBack(DataType Element)
 {
 	DoublyLinkedList_Node<DataType>* NewNode = new DoublyLinkedList_Node<DataType>(Element); // Utworzenie nowego węzła.
-	if (IsEmpty())
+	if (DataStructure<DataType>::IsEmpty())
 	{
 		m_HeadNode = NewNode; // Jeśli lista jest pusta ustawia NewNode również jako m_HeadNode.
 	}
@@ -137,41 +143,59 @@ void DoublyLinkedList<DataType>::PushBack(DataType Element)
 		m_TailNode->SetNextNode(NewNode);	  // Następnym węzłem bieżącego TailNode jest NewNode.
 	}
 	m_TailNode = NewNode; // NewNode zostaje ustawiony jako nowy TailNode.
-	++m_Size;
+	++DataStructure<DataType>::m_Size;
 }
 
 template<typename DataType>
 void DoublyLinkedList<DataType>::PopFront()
 {
-	if (!IsEmpty())
+	if (!DataStructure<DataType>::IsEmpty())
 	{
-		DoublyLinkedList_Node<DataType>* OldHeadNode = m_HeadNode; // OldHeadNode jest wskaźnikiem na stary HeadNode.
+		if (m_HeadNode == m_TailNode) // Jeśli jest tylko jeden węzeł.
+		{
+			delete m_HeadNode;
+			m_HeadNode = nullptr;
+			m_TailNode = nullptr;
+		}
+		else
+		{
+			DoublyLinkedList_Node<DataType>* OldHeadNode = m_HeadNode; // OldHeadNode jest wskaźnikiem na stary HeadNode.
 
-		m_HeadNode = m_HeadNode->GetNextNode(); // Węzeł po HeadNode jest nowym HeadNode.
-		m_HeadNode->SetPreviousNode(nullptr);
+			m_HeadNode = m_HeadNode->GetNextNode(); // Węzeł po HeadNode jest nowym HeadNode.
+			m_HeadNode->SetPreviousNode(nullptr);
 
-		delete OldHeadNode; // Usunięcie starego HeadNode.
-		--m_Size;
+			delete OldHeadNode; // Usunięcie starego HeadNode.
+		}
+		--DataStructure<DataType>::m_Size;
 	}
 }
 
 template<typename DataType>
 void DoublyLinkedList<DataType>::PopBack()
 {
-	if (!IsEmpty())
+	if (!DataStructure<DataType>::IsEmpty())
 	{
-		DoublyLinkedList_Node<DataType>* OldTailNode = m_TailNode; // OldTailNode jest wskaźnikiem na stary TailNode.
+		if (m_HeadNode == m_TailNode) // Jeśli jest tylko jeden węzeł.
+		{
+			delete m_HeadNode;
+			m_HeadNode = nullptr;
+			m_TailNode = nullptr;
+		}
+		else
+		{
+			DoublyLinkedList_Node<DataType>* OldTailNode = m_TailNode; // OldTailNode jest wskaźnikiem na stary TailNode.
 
-		m_TailNode = m_TailNode->GetPreviousNode(); // Węzeł przed TailNode jest nowym TailNode.
-		m_TailNode->SetNextNode(nullptr);
+			m_TailNode = m_TailNode->GetPreviousNode(); // Węzeł przed TailNode jest nowym TailNode.
+			m_TailNode->SetNextNode(nullptr);
 
-		delete OldTailNode; // Usunięcie starego HeadNode.
-		--m_Size;
+			delete OldTailNode; // Usunięcie starego HeadNode.
+		}
+		--DataStructure<DataType>::m_Size;
 	}
 }
 
 template<typename DataType>
-void DoublyLinkedList<DataType>::InsertBefore(DataType Element, unsigned int Index)
+void DoublyLinkedList<DataType>::Insert(DataType Element, unsigned int Index)
 {
 	DoublyLinkedList_Node<DataType>* NewNode = new DoublyLinkedList_Node<DataType>(Element); // Utworzenie nowego węzła.
 	DoublyLinkedList_Node<DataType>* CurrentNode;
@@ -180,7 +204,7 @@ void DoublyLinkedList<DataType>::InsertBefore(DataType Element, unsigned int Ind
 	{
 		PushFront(Element);
 	}
-	else if (Index < m_Size && Index <= (m_Size / 2)) // Jeśli indeks leży w pierwszej połowie listy.
+	else if (Index < DataStructure<DataType>::m_Size && Index <= (DataStructure<DataType>::m_Size / 2)) // Jeśli indeks leży w pierwszej połowie listy.
 	{
 		CurrentNode = m_HeadNode; // Szukanie od początku listy.
 		for (unsigned int i = 0; i < Index; i++)
@@ -190,66 +214,42 @@ void DoublyLinkedList<DataType>::InsertBefore(DataType Element, unsigned int Ind
 
 		InsertBetween(NewNode, CurrentNode->GetPreviousNode(), CurrentNode);
 	}
-	else if (Index < m_Size && Index >(m_Size / 2)) // Jeśli indeks leży w drugiej połowie listy.
+	else if (Index < DataStructure<DataType>::m_Size && Index >(DataStructure<DataType>::m_Size / 2)) // Jeśli indeks leży w drugiej połowie listy.
 	{
 		CurrentNode = m_TailNode; // Szukanie od końca listy.
-		for (unsigned int i = m_Size - 1; i > Index; i--)
+		for (unsigned int i = DataStructure<DataType>::m_Size - 1; i > Index; i--)
 		{
 			CurrentNode = CurrentNode->GetPreviousNode(); // Przechodzenie po poprzednich węzłach.
 		}
 
 		InsertBetween(NewNode, CurrentNode->GetPreviousNode(), CurrentNode);
-	}
-}
-
-template<typename DataType>
-void DoublyLinkedList<DataType>::InsertAfter(DataType Element, unsigned int Index)
-{
-	DoublyLinkedList_Node<DataType>* NewNode = new DoublyLinkedList_Node<DataType>(Element); // Utworzenie nowego węzła.
-	DoublyLinkedList_Node<DataType>* CurrentNode;
-
-	if (Index == m_Size - 1)
-	{
-		PushBack(Element);
-	}
-	else if (Index < m_Size && Index <= (m_Size / 2)) // Jeśli indeks leży w pierwszej połowie listy.
-	{
-		CurrentNode = m_HeadNode; // Szukanie od początku listy.
-		for (unsigned int i = 0; i < Index; i++)
-		{
-			CurrentNode = CurrentNode->GetNextNode(); // Przechodzenie po następnych węzłach.
-		}
-
-		InsertBetween(NewNode, CurrentNode, CurrentNode->GetNextNode());
-	}
-	else if (Index < m_Size && Index > m_Size / 2) // Jeśli indeks leży w drugiej połowie listy.
-	{
-		CurrentNode = m_TailNode; // Szukanie od końca listy.
-		for (unsigned int i = m_Size - 1; i > Index; i--)
-		{
-			CurrentNode = CurrentNode->GetPreviousNode(); // Przechodzenie po poprzednich węzłach.
-		}
-
-		InsertBetween(NewNode, CurrentNode, CurrentNode->GetNextNode());
 	}
 }
 
 template<typename DataType>
 void DoublyLinkedList<DataType>::RemoveAt(unsigned int Index)
 {
-	if (!IsEmpty())
+	if (!DataStructure<DataType>::IsEmpty())
 	{
+		if (m_HeadNode == m_TailNode) // Jeśli jest tylko jeden węzeł.
+		{
+			delete m_HeadNode;
+			m_HeadNode = nullptr;
+			m_TailNode = nullptr;
+			--DataStructure<DataType>::m_Size;
+		}
+
 		DoublyLinkedList_Node<DataType>* CurrentNode;
 
 		if (Index == 0)
 		{
 			PopFront();
 		}
-		else if (Index == m_Size - 1)
+		else if (Index == DataStructure<DataType>::m_Size - 1)
 		{
 			PopBack();
 		}
-		else if (Index < m_Size && Index <= (m_Size / 2)) // Jeśli indeks leży w pierwszej połowie listy.
+		else if (Index < DataStructure<DataType>::m_Size && Index <= (DataStructure<DataType>::m_Size / 2)) // Jeśli indeks leży w pierwszej połowie listy.
 		{
 			CurrentNode = m_HeadNode; // Szukanie od początku listy.
 			for (unsigned int i = 0; i < Index; i++)
@@ -260,12 +260,12 @@ void DoublyLinkedList<DataType>::RemoveAt(unsigned int Index)
 			CurrentNode->GetPreviousNode()->SetNextNode(CurrentNode->GetNextNode());		// Ustawia wskaźnik NextNode poprzedniego węzła na następny węzeł po CurrentNode.
 			CurrentNode->GetNextNode()->SetPreviousNode(CurrentNode->GetPreviousNode());	// Ustawia wskaźnik PrevNode następnego węzła na poprzedni węzeł przed CurrentNode.
 			delete CurrentNode;
-			--m_Size;
+			--DataStructure<DataType>::m_Size;
 		}
-		else if (Index < m_Size && Index > m_Size / 2) // Jeśli indeks leży w drugiej połowie listy.
+		else if (Index < DataStructure<DataType>::m_Size && Index > DataStructure<DataType>::m_Size / 2) // Jeśli indeks leży w drugiej połowie listy.
 		{
 			CurrentNode = m_TailNode; // Szukanie od końca listy.
-			for (unsigned int i = m_Size - 1; i > Index; i--)
+			for (unsigned int i = DataStructure<DataType>::m_Size - 1; i > Index; i--)
 			{
 				CurrentNode = CurrentNode->GetPreviousNode(); // Przechodzenie po poprzednich węzłach.
 			}
@@ -273,7 +273,7 @@ void DoublyLinkedList<DataType>::RemoveAt(unsigned int Index)
 			CurrentNode->GetPreviousNode()->SetNextNode(CurrentNode->GetNextNode());		// Ustawia wskaźnik NextNode poprzedniego węzła na następny węzeł.
 			CurrentNode->GetNextNode()->SetPreviousNode(CurrentNode->GetPreviousNode());	// Ustawia wskaźnik PrevNode następnego węzła na poprzedni węzeł.
 			delete CurrentNode;
-			--m_Size;
+			--DataStructure<DataType>::m_Size;
 		}
 	}
 }
@@ -317,7 +317,7 @@ void DoublyLinkedList<DataType>::InsertBetween(DoublyLinkedList_Node<DataType>* 
 	NewNode->SetPreviousNode(PreviousNode);	// Ustawia wskaźnik PrevNode nowego węzła na poprzedni węzeł.
 	NewNode->SetNextNode(NextNode);			// Ustawia wskaźnik NextNode nowego węzła na następny węzeł.
 	NextNode->SetPreviousNode(NewNode);		// Ustawia wskaźnik PrevNode następnego węzła na nowy węzeł.
-	++m_Size;
+	++DataStructure<DataType>::m_Size;
 }
 
 
