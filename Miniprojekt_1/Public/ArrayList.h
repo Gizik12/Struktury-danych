@@ -1,42 +1,37 @@
+#include "DataStructure.h"
 #ifndef ARRAY_LIST
 #define ARRAY_LIST
 
-template<typename DataType, unsigned int Capacity>
-class ArrayList
+template<typename DataType>
+class ArrayList final : public DataStructure<DataType>
 {
 public:
 	// Konstruktor.
-	ArrayList();
+	ArrayList(unsigned int Capacity);
 
 	// Destruktor.
 	~ArrayList();
 
 	// Dodaje element na początku tablicy.
-	void PushFront(DataType Element);
+	virtual void PushFront(DataType Element) override;
 
 	// Dodaje element na końcu tablicy.
-	void PushBack(DataType Element);
+	virtual void PushBack(DataType Element) override;
 
 	// Usuwa element na początku tablicy.
-	void PopFront();
+	virtual void PopFront() override;
 
 	// Usuwa element na końcu tablicy.
-	void PopBack();
+	virtual void PopBack() override;
 
 	// Dodaje element w wybrane miejsce tablicy.
-	void Insert(DataType Element, unsigned int Index);
+	virtual void Insert(DataType Element, unsigned int Index) override;
 
 	// Usuwa element w wybranym miejscu tablicy.
-	void RemoveAt(unsigned int Index);
+	virtual void RemoveAt(unsigned int Index) override;
 
 	// Szuka podanego elementu w tablicy i zwraca indeks jego pierwszej instancji.
 	int SearchForFirstInstance(DataType Element);
-
-	// Sprawdza czy tablica jest pusta.
-	bool IsEmpty() { return m_Size ? false : true; }
-
-	// Zwraca liczbę elementów w tablicy.
-	unsigned int GetSize() const { return m_Size; }
 
 	// Zwraca maksymalną pojemność tablicy.
 	unsigned int GetCapacity() const { return m_Capacity; }
@@ -45,7 +40,6 @@ public:
 	DataType GetElementOfIndex(int Index) const { return m_Elements[Index]; }
 
 private:
-	unsigned int m_Size;		// Liczba elementów w tablicy.
 	unsigned int m_Capacity;	// Maksymalna pojemność tablicy.
 	DataType* m_Elements;		// Wskaźnik na pierwszy element tablicy.
 
@@ -57,15 +51,18 @@ private:
 };
 
 
-template<typename DataType, unsigned int Capacity>
-ArrayList<DataType, Capacity>::ArrayList()
-	: m_Size(0), m_Capacity(Capacity), m_Elements(nullptr)
+template<typename DataType>
+ArrayList<DataType>::ArrayList(unsigned int Capacity)
+	: m_Capacity(Capacity), m_Elements(nullptr)
 {
-	m_Elements = new DataType[m_Capacity];
+	if (m_Capacity > 0)
+	{
+		m_Elements = new DataType[m_Capacity];
+	}
 }
 
-template<typename DataType, unsigned int Capacity>
-ArrayList<DataType, Capacity>::~ArrayList()
+template<typename DataType>
+ArrayList<DataType>::~ArrayList()
 {
 	if (m_Elements != nullptr)
 	{
@@ -73,112 +70,112 @@ ArrayList<DataType, Capacity>::~ArrayList()
 	}
 }
 
-template<typename DataType, unsigned int Capacity>
-void ArrayList<DataType, Capacity>::PushFront(DataType Element)
+template<typename DataType>
+void ArrayList<DataType>::PushFront(DataType Element)
 {
-	if (m_Size == m_Capacity) // Jeśli tablica jest zapełniona.
+	if (DataStructure<DataType>::m_Size >= m_Capacity) // Jeśli tablica jest zapełniona.
 	{
 		DoubleTheCapacity(); // Dwukrotnie zwiększ pojemność.
 	}
-	for (unsigned int i = m_Size; i > 0; i--)
+	for (unsigned int i = DataStructure<DataType>::m_Size; i > 0; i--)
 	{
 		m_Elements[i] = m_Elements[i - 1]; // Przesunięcie wszystkich elementów w prawo.
 	}
 	m_Elements[0] = Element;
-	++m_Size;
+	++DataStructure<DataType>::m_Size;
 }
 
-template<typename DataType, unsigned int Capacity>
-void ArrayList<DataType, Capacity>::PushBack(DataType Element)
+template<typename DataType>
+void ArrayList<DataType>::PushBack(DataType Element)
 {
-	if (m_Size == m_Capacity) // Jeśli tablica jest zapełniona.
+	if (DataStructure<DataType>::m_Size >= m_Capacity) // Jeśli tablica jest zapełniona.
 	{
 		DoubleTheCapacity(); // Dwukrotnie zwiększ pojemność.
 	}
-	m_Elements[m_Size] = Element;
-	++m_Size;
+	m_Elements[DataStructure<DataType>::m_Size] = Element;
+	++DataStructure<DataType>::m_Size;
 }
-// TODO: Naprawić -> Ostatni element zostaje na końcu tablicy
-template<typename DataType, unsigned int Capacity>
-void ArrayList<DataType, Capacity>::PopFront()
+
+template<typename DataType>
+void ArrayList<DataType>::PopFront()
 {
-	if (!IsEmpty())
+	if (!ArrayList<DataType>::IsEmpty())
 	{
 		DataType* ResizedArray = new DataType[m_Capacity]; // Utworzenie tablicy pomocniczej.
-		for (unsigned int i = 0; i < m_Size - 1; i++)
+		for (unsigned int i = 0; i < DataStructure<DataType>::m_Size - 1; i++)
 		{
 			ResizedArray[i] = m_Elements[i + 1];
 		}
 		m_Elements = ResizedArray;	// Zastąpienie starej tablicy nową tablicą bez elementu na początku.
-		--m_Size;
+		--DataStructure<DataType>::m_Size;
 
-		if (m_Size == m_Capacity / 2) // Jeśli tablica jest w połowie pusta.
+		if (DataStructure<DataType>::m_Size <= m_Capacity / 2) // Jeśli tablica jest w połowie pusta.
 		{
 			HalveTheCapacity(); // Dwukrotnie zmniejsz pojemność.
 		}
 	}
 }
 
-template<typename DataType, unsigned int Capacity>
-void ArrayList<DataType, Capacity>::PopBack()
+template<typename DataType>
+void ArrayList<DataType>::PopBack()
 {
-	if (!IsEmpty())
+	if (!ArrayList<DataType>::IsEmpty())
 	{
 		DataType* ResizedArray = new DataType[m_Capacity]; // Utworzenie tablicy pomocniczej.
-		for (unsigned int i = 0; i < m_Size - 1; i++)
+		for (unsigned int i = 0; i < DataStructure<DataType>::m_Size - 1; i++)
 		{
 			ResizedArray[i] = m_Elements[i];
 		}
 		m_Elements = ResizedArray;	// Zastąpienie starej tablicy nową tablicą bez elementu na końcu.
-		--m_Size;
+		--DataStructure<DataType>::m_Size;
 
-		if (m_Size == m_Capacity / 2) // Jeśli tablica jest w połowie pusta.
+		if (DataStructure<DataType>::m_Size <= m_Capacity / 2) // Jeśli tablica jest w połowie pusta.
 		{
 			HalveTheCapacity(); // Dwukrotnie zmniejsz pojemność.
 		}
 	}
 }
 
-template<typename DataType, unsigned int Capacity>
-void ArrayList<DataType, Capacity>::Insert(DataType Element, unsigned int Index)
+template<typename DataType>
+void ArrayList<DataType>::Insert(DataType Element, unsigned int Index)
 {
-	if (Index < m_Size)
+	if (Index < DataStructure<DataType>::m_Size)
 	{
-		if (m_Size == m_Capacity) // Jeśli tablica jest zapełniona.
+		if (DataStructure<DataType>::m_Size >= m_Capacity) // Jeśli tablica jest zapełniona.
 		{
 			DoubleTheCapacity(); // Dwukrotnie zwiększ pojemność.
 		}
-		for (unsigned int i = m_Size; i > Index; i--)
+		for (unsigned int i = DataStructure<DataType>::m_Size; i > Index; i--)
 		{
 			m_Elements[i] = m_Elements[i - 1]; // Przesunięcie elementów o indeksie większym lub równym od podanego w prawo.
 		}
 		m_Elements[Index] = Element;
-		++m_Size;
+		++DataStructure<DataType>::m_Size;
 	}
 }
 
-template<typename DataType, unsigned int Capacity>
-void ArrayList<DataType, Capacity>::RemoveAt(unsigned int Index)
+template<typename DataType>
+void ArrayList<DataType>::RemoveAt(unsigned int Index)
 {
-	if (!IsEmpty() && Index < m_Size)
+	if (!ArrayList<DataType>::IsEmpty() && Index < DataStructure<DataType>::m_Size)
 	{
-		for (unsigned int i = Index; i < m_Size; i++)
+		for (unsigned int i = Index; i < DataStructure<DataType>::m_Size; i++)
 		{
 			m_Elements[i] = m_Elements[i + 1]; // Przesunięcie elementów o indeksie większym lub równym od podanego w lewo.
 		}
-		--m_Size;
+		--DataStructure<DataType>::m_Size;
 
-		if (m_Size == m_Capacity / 2) // Jeśli tablica jest w połowie pusta.
+		if (DataStructure<DataType>::m_Size <= m_Capacity / 2) // Jeśli tablica jest w połowie pusta.
 		{
 			HalveTheCapacity(); // Dwukrotnie zmniejsz pojemność.
 		}
 	}
 }
 
-template<typename DataType, unsigned int Capacity>
-int ArrayList<DataType, Capacity>::SearchForFirstInstance(DataType Element)
+template<typename DataType>
+int ArrayList<DataType>::SearchForFirstInstance(DataType Element)
 {
-	for (unsigned int i = 0; i < m_Size; i++)
+	for (unsigned int i = 0; i < DataStructure<DataType>::m_Size; i++)
 	{
 		if (m_Elements[i] == Element)
 		{
@@ -189,24 +186,24 @@ int ArrayList<DataType, Capacity>::SearchForFirstInstance(DataType Element)
 	return -1; // Zwraca błąd./Brak podanego elementu w tablicy.
 }
 
-template<typename DataType, unsigned int Capacity>
-void ArrayList<DataType, Capacity>::DoubleTheCapacity()
+template<typename DataType>
+void ArrayList<DataType>::DoubleTheCapacity()
 {
 	m_Capacity *= 2;
 	DataType* ResizedArray = new DataType[m_Capacity]; // Utworzenie tablicy pomocniczej.
-	for (unsigned int i = 0; i < m_Size; i++)
+	for (unsigned int i = 0; i < DataStructure<DataType>::m_Size; i++)
 	{
 		ResizedArray[i] = m_Elements[i];
 	}
 	m_Elements = ResizedArray;	// Zastąpienie starej tablicy nową tablicą o dwukronie większej pojemności.
 }
 
-template<typename DataType, unsigned int Capacity>
-void ArrayList<DataType, Capacity>::HalveTheCapacity()
+template<typename DataType>
+void ArrayList<DataType>::HalveTheCapacity()
 {
 	m_Capacity /= 2;
 	DataType* ResizedArray = new DataType[m_Capacity]; // Utworzenie tablicy pomocniczej.
-	for (unsigned int i = 0; i < m_Size; i++)
+	for (unsigned int i = 0; i < DataStructure<DataType>::m_Size; i++)
 	{
 		ResizedArray[i] = m_Elements[i];
 	}
@@ -214,4 +211,4 @@ void ArrayList<DataType, Capacity>::HalveTheCapacity()
 }
 
 
-#endif
+#endif // ARRAY_LIST
