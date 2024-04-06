@@ -3,24 +3,26 @@
 #include "Public/DataStructure.h"
 #include "Public/ArrayList.h"
 #include "Public/SinglyLinkedList.h"
-#include "Public/SinglyLinkedListHeadTail.h"
+#include "PublicSinglyLinkedListHeadTail.h"
 #include "Public/DoublyLinkedList.h"
+#include "Public/DataGenerator.h"
 
 using namespace std;
 
+// Pomiar czasu wykonywania
 static long long MeasureTime(const chrono::steady_clock::time_point Start, const chrono::steady_clock::time_point End)
 {
-	auto Duration = chrono::duration_cast<chrono::milliseconds>(End - Start);
+	auto Duration = chrono::duration_cast<chrono::microseconds>(End - Start);
 	return Duration.count();
 }
 
 int main()
 {
-	setlocale(LC_ALL, "pl_PL");
+	setlocale(LC_ALL, "pl_PL"); // Ustawienie języka polskiego
 
-	unsigned int Capacity = 0;
-	char DataStructureType;
-	char Option;
+	char DataStructureType; // Opcja menu głownego
+	char StructureOption;	// Opcja menu funkcji
+	unsigned int Capacity = 0; // Domyślna pojemność ArrayList
 
 	// Menu główne
 	while (true)
@@ -49,7 +51,6 @@ int main()
 			}
 			else
 			{
-				
 				PickedDataStructure = new ArrayList<int>(Capacity);
 				break;
 			}
@@ -94,16 +95,36 @@ int main()
 			do
 			{
 				system("cls");
-				cout << "Wybierz operację:\n1. Wyświetl rozmiar\n2. Dodaj element na początku\n3. Dodaj element na końcu\n4. Dodaj element w wybranym miejscu\n5. Usuń element z przodu\n6. Usuń element na końcu\n7. Usuń element w wybranym miejscu\n8. Wyszukaj element w strukturze\n9. Cofnij\n";
+				cout << "Wybierz operację:\n0. Wygeneruj dane\n1. Wyświetl rozmiar\n2. Dodaj element na początku\n3. Dodaj element na końcu\n4. Dodaj element w wybranym miejscu\n5. Usuń element z przodu\n6. Usuń element na końcu\n7. Usuń element w wybranym miejscu\n8. Wyszukaj element w strukturze\n9. Cofnij\n";
 				if (PickedDataStructure->IsEmpty())
 				{
 					cout << "Brak elementów!\n";
 				}
-				cin >> Option;
-			} while (Option != '1' && Option != '2' && Option != '3' && Option != '4' && Option != '5' && Option != '6' && Option != '7' && Option != '8' && Option != '9');
+				cin >> StructureOption;
+			} while (StructureOption != '0' && StructureOption != '1' && StructureOption != '2' && StructureOption != '3' && StructureOption != '4' && StructureOption != '5' && StructureOption != '6' && StructureOption != '7' && StructureOption != '8' && StructureOption != '9');
 
-			switch (Option)
+			switch (StructureOption)
 			{
+			case '0':
+				unsigned int NumOfData;
+				int MinData;
+				int MaxData;
+				do
+				{
+					cout << "Ile danych wygenerować?: ";
+					cin >> NumOfData;
+					cout << "Podaj najmniejszą możliwą liczbę do wygenerowania: ";
+					cin >> MinData;
+					cout << "Podaj największą możliwą liczbę do wygenerowania: ";
+					cin >> MaxData;
+				} while (NumOfData <= 0 || MinData < -2147483647 || MinData > 2147483647 || MaxData > 2147483647 || MaxData < -2147483647 || MinData > MaxData);
+
+				for (unsigned int i = 0; i < NumOfData; i++)
+				{
+					PickedDataStructure->PushBack(GenerateRandomNumber(MinData, MaxData));
+				}
+				continue;
+
 			case '1':
 				cout << "Rozmiar: " << PickedDataStructure->GetSize() << endl;
 				system("pause");
@@ -112,26 +133,45 @@ int main()
 			case '2':
 			{
 				int Element;
+				chrono::steady_clock::time_point OperationStart;
+				chrono::steady_clock::time_point OperationEnd;
 
-				cout << "Dodaj element na początek: ";
-				cin >> Element;
+				char InitializationType; // Wybór rodzaju wprowadzenia liczby
+				do
+				{
+					cout << "Wybierz sposób wprowadzenia danych (1 - wprowadź ręcznie, 2 - wygeneruj losowo (zakres int)): ";
+					cin >> InitializationType;
+				} while (InitializationType != '1' && InitializationType != '2');
+
+				switch (InitializationType)
+				{
+				case '1':
+					cout << "Podaj element: ";
+					cin >> Element;
+					break;
+
+				case '2':
+					Element = GenerateRandomNumber(-2147483647, 2147483647);
+					break;
+				}
 
 				{
 					// Kopia do prowadzenia badań
 					DataStructure<int>* Copy = PickedDataStructure->Clone();
 
-					auto OperationStart = chrono::high_resolution_clock::now();
+					// Prowadzenie badań
+					OperationStart = chrono::high_resolution_clock::now();
 					for (unsigned int i = 0; i < NumOfIterations; i++)
 					{
 						Copy->PushFront(Element);
 					}
-					auto OperationEnd = chrono::high_resolution_clock::now();
+					OperationEnd = chrono::high_resolution_clock::now();
 					delete Copy;
 
 					PickedDataStructure->PushFront(Element);
 
 					system("cls");
-					cout << "Czas wykonywania: " << MeasureTime(OperationStart, OperationEnd) << " ms\n";
+					cout << "Czas wykonywania: " << MeasureTime(OperationStart, OperationEnd) << " mikrosekund\n";
 					system("pause");
 					continue;
 				}
@@ -140,9 +180,27 @@ int main()
 			case '3':
 			{
 				int Element;
+				chrono::steady_clock::time_point OperationStart;
+				chrono::steady_clock::time_point OperationEnd;
 
-				cout << "Dodaj element na koniec: ";
-				cin >> Element;
+				char InitializationType; // Wybór rodzaju wprowadzenia liczby
+				do
+				{
+					cout << "Wybierz sposób wprowadzenia danych (1 - wprowadź ręcznie, 2 - wygeneruj losowo (zakres int)): ";
+					cin >> InitializationType;
+				} while (InitializationType != '1' && InitializationType != '2');
+
+				switch (InitializationType)
+				{
+				case '1':
+					cout << "Podaj element: ";
+					cin >> Element;
+					break;
+
+				case '2':
+					Element = GenerateRandomNumber(-2147483647, 2147483647);
+					break;
+				}
 
 				// Kopia do prowadzenia badań
 				DataStructure<int>* Copy = PickedDataStructure->Clone();
@@ -152,19 +210,18 @@ int main()
 					NumOfIterations = 10000;
 				}
 
-				auto OperationStart = chrono::high_resolution_clock::now();
+				OperationStart = chrono::high_resolution_clock::now();
 				for (unsigned int i = 0; i < NumOfIterations; i++)
 				{
 					Copy->PushBack(Element);
 				}
-				auto OperationEnd = chrono::high_resolution_clock::now();
-				cout << Copy->GetSize();
+				OperationEnd = chrono::high_resolution_clock::now();
 				delete Copy;
 
 				PickedDataStructure->PushBack(Element);
 
 				//system("cls");
-				cout << "Czas wykonywania: " << MeasureTime(OperationStart, OperationEnd) << " ms\n";
+				cout << "Czas wykonywania: " << MeasureTime(OperationStart, OperationEnd) << " mikrosekund\n";
 				system("pause");
 				continue;
 			}
@@ -173,59 +230,84 @@ int main()
 			{
 				int Element;
 				unsigned int Index;
+				chrono::steady_clock::time_point OperationStart;
+				chrono::steady_clock::time_point OperationEnd;
 
-				cout << "Dodaj element: ";
-				cin >> Element;
-
-				if (!PickedDataStructure->IsEmpty())
+				char InitializationType; // Wybór rodzaju wprowadzenia liczby
+				do
 				{
-					do
+					cout << "Wybierz sposób wprowadzenia danych (1 - wprowadź ręcznie, 2 - wygeneruj losowo): ";
+					cin >> InitializationType;
+				} while (InitializationType != '1' && InitializationType != '2');
+
+				switch (InitializationType)
+				{
+				case '1':
+					cout << "Dodaj element: ";
+					cin >> Element;
+					if (!PickedDataStructure->IsEmpty())
 					{
-						cout << "Podaj indeks (0 - " << PickedDataStructure->GetSize() << "): ";
-						cin >> Index;
-					} while (Index < 0 || Index > PickedDataStructure->GetSize());
-				}
-				else
-				{
-					PickedDataStructure->PushFront(Element);
-					continue;
+						do
+						{
+							cout << "Podaj indeks (0 - " << PickedDataStructure->GetSize() << "): ";
+							cin >> Index;
+						} while (Index < 0 || Index > PickedDataStructure->GetSize());
+					}
+					else
+					{
+						OperationStart = chrono::high_resolution_clock::now();
+						PickedDataStructure->PushFront(Element);
+						OperationEnd = chrono::high_resolution_clock::now();
+					}
+
+				case '2':
+					Element = GenerateRandomNumber();
+					Index = GenerateRandomNumber(0, PickedDataStructure->GetSize() - 1);
+					break;
 				}
 
-				
 				if (Index < PickedDataStructure->GetSize())
 				{
+					OperationStart = chrono::high_resolution_clock::now();
 					PickedDataStructure->Insert(Element, Index);
+					OperationEnd = chrono::high_resolution_clock::now();
 				}
 				else
 				{
+					OperationStart = chrono::high_resolution_clock::now();
 					PickedDataStructure->PushBack(Element);
+					OperationEnd = chrono::high_resolution_clock::now();
 				}
-				// Po dodaniu generatora liczb
-				/*system("cls");
-				cout << "Czas wykonywania: " << MeasureTime(OperationStart, OperationEnd) << " ms\n";
-				system("pause");*/
+				
+				system("cls");
+				cout << "Czas wykonywania: " << MeasureTime(OperationStart, OperationEnd) << " mikrosekund\n";
+				system("pause");
 				continue;
 			}
 
 			case '5':
 			{
+				chrono::steady_clock::time_point OperationStart;
+				chrono::steady_clock::time_point OperationEnd;
+
 				if (!PickedDataStructure->IsEmpty())
 				{
 					// Kopia do prowadzenia badań
 					DataStructure<int>* Copy = PickedDataStructure->Clone();
 
-					auto OperationStart = chrono::high_resolution_clock::now();
+					// Prowadzenie badań
+					OperationStart = chrono::high_resolution_clock::now();
 					for (unsigned int i = 0; i < NumOfIterations; i++)
 					{
 						Copy->PopFront();
 					}
-					auto OperationEnd = chrono::high_resolution_clock::now();
+					OperationEnd = chrono::high_resolution_clock::now();
 					delete Copy;
 
 					PickedDataStructure->PopFront();
 
 					system("cls");
-					cout << "Czas wykonywania: " << MeasureTime(OperationStart, OperationEnd) << " ms\n";
+					cout << "Czas wykonywania: " << MeasureTime(OperationStart, OperationEnd) << " mikrosekund\n";
 					system("pause");
 				}
 				continue;
@@ -233,23 +315,27 @@ int main()
 
 			case '6':
 			{
+				chrono::steady_clock::time_point OperationStart;
+				chrono::steady_clock::time_point OperationEnd;
+
 				if (!PickedDataStructure->IsEmpty())
 				{
 					// Kopia do prowadzenia badań
 					DataStructure<int>* Copy = PickedDataStructure->Clone();
 
-					auto OperationStart = chrono::high_resolution_clock::now();
+					// Prowadzenie badań
+					OperationStart = chrono::high_resolution_clock::now();
 					for (unsigned int i = 0; i < NumOfIterations; i++)
 					{
 						Copy->PopBack();
 					}
-					auto OperationEnd = chrono::high_resolution_clock::now();
+					OperationEnd = chrono::high_resolution_clock::now();
 					delete Copy;
 
 					PickedDataStructure->PopBack();
 
 					system("cls");
-					cout << "Czas wykonywania: " << MeasureTime(OperationStart, OperationEnd) << " ms\n";
+					cout << "Czas wykonywania: " << MeasureTime(OperationStart, OperationEnd) << " mikrosekund\n";
 					system("pause");
 				}
 				continue;
@@ -258,6 +344,27 @@ int main()
 			case '7': // Generator liczb potrzebny do badań
 			{
 				unsigned int Index;
+				chrono::steady_clock::time_point OperationStart;
+				chrono::steady_clock::time_point OperationEnd;
+
+				char InitializationType; // Wybór rodzaju wprowadzenia liczby
+				do
+				{
+					cout << "Wybierz sposób wprowadzenia danych (1 - wprowadź ręcznie, 2 - wygeneruj losowo): ";
+					cin >> InitializationType;
+				} while (InitializationType != '1' && InitializationType != '2');
+
+				switch (InitializationType)
+				{
+				case '1':
+					cout << "Podaj element: ";
+					cin >> Index;
+					break;
+
+				case '2':
+					Index = GenerateRandomNumber(0, PickedDataStructure->GetSize() - 1);
+					break;
+				}
 				
 				if (!PickedDataStructure->IsEmpty())
 				{
@@ -267,17 +374,43 @@ int main()
 						cin >> Index;
 					} while (Index < 0 || Index >= PickedDataStructure->GetSize());
 
+					OperationStart = chrono::high_resolution_clock::now();
 					PickedDataStructure->RemoveAt(Index);
+					OperationEnd = chrono::high_resolution_clock::now();
 				}
 				// Po dodaniu generatora liczb
-				/*system("cls");
-				cout << "Czas wykonywania: " << MeasureTime(OperationStart, OperationEnd) << " ms\n";
-				system("pause");*/
+				system("cls");
+				cout << "Czas wykonywania: " << MeasureTime(OperationStart, OperationEnd) << " mikrosekund\n";
+				system("pause");
 				continue;
 			}
 
 			case '8':
 			{
+				int Element; // Szukany element
+				unsigned int NumOfInstances; // Liczba wystąpień szukanego elementu
+				chrono::steady_clock::time_point OperationStart;
+				chrono::steady_clock::time_point OperationEnd;
+
+				char InitializationType; // Wybór rodzaju wprowadzenia liczby
+				do
+				{
+					cout << "Wybierz sposób wprowadzenia danych (1 - wprowadź ręcznie, 2 - wygeneruj losowo): ";
+					cin >> InitializationType;
+				} while (InitializationType != '1' && InitializationType != '2');
+
+				switch (InitializationType)
+				{
+				case '1':
+					cout << "Podaj element: ";
+					cin >> Element;
+					break;
+
+				case '2':
+					Element = GenerateRandomNumber(-2147483647, 2147483647);
+					break;
+				}
+
 				if (DoublyLinkedList<int>* DLL = dynamic_cast<DoublyLinkedList<int>*>(PickedDataStructure))
 				{
 					char Choice;
@@ -287,62 +420,44 @@ int main()
 						cin >> Choice;
 					} while (Choice != '1' && Choice != '2');
 
-					int Element;
-
-					cout << "Podaj element: ";
-					cin >> Element;
-
 					system("cls");
 					cout << "Szukam \"" << Element << "\" w strukturze...\n";
 					switch (Choice)
 					{
 					case '1':
 					{
-						auto OperationStart = chrono::high_resolution_clock::now();
-						NumOfIterations = DLL->SearchForElementForward(Element);
-						auto OperationEnd = chrono::high_resolution_clock::now();
-
-						system("cls");
-						cout << "Znaleziono " << NumOfIterations << " wystąpienie/wystąpień \"" << Element << "\" w strukturze\n";
-						cout << "Czas wykonywania: " << MeasureTime(OperationStart, OperationEnd) << " ms\n";
-						system("pause");
+						// Prowadzenie badań
+						OperationStart = chrono::high_resolution_clock::now();
+						NumOfInstances = DLL->SearchForElementForward(Element);
+						OperationEnd = chrono::high_resolution_clock::now();
 						break;
 					}
 
 					case '2':
 					{
-						auto OperationStart = chrono::high_resolution_clock::now();
-						NumOfIterations = DLL->SearchForElementBackward(Element);
-						auto OperationEnd = chrono::high_resolution_clock::now();
-
-						system("cls");
-						cout << "Znaleziono " << NumOfIterations << " wystąpienie/wystąpień \"" << Element << "\" w strukturze\n";
-						cout << "Czas wykonywania: " << MeasureTime(OperationStart, OperationEnd) << " ms\n";
-						system("pause");
+						// Prowadzenie badań
+						OperationStart = chrono::high_resolution_clock::now();
+						NumOfInstances = DLL->SearchForElementBackward(Element);
+						OperationEnd = chrono::high_resolution_clock::now();
 						break;
 					}
 					}
 				}
 				else
 				{
-					int Element;
-
-					cout << "Podaj element: ";
-					cin >> Element;
-
 					system("cls");
 					cout << "Szukam \"" << Element << "\" w strukturze...\n";
 
 					// Prowadzenie badań
-					auto OperationStart = chrono::high_resolution_clock::now();
+					OperationStart = chrono::high_resolution_clock::now();
 					NumOfIterations = PickedDataStructure->SearchForElementForward(Element);
-					auto OperationEnd = chrono::high_resolution_clock::now();
-
-					system("cls");
-					cout << "Znaleziono " << NumOfIterations << " wystąpienie/wystąpień \"" << Element << "\" w strukturze\n";
-					cout << "Czas wykonywania: " << MeasureTime(OperationStart, OperationEnd) << " ms\n";
-					system("pause");
+					OperationEnd = chrono::high_resolution_clock::now();
 				}
+				system("cls");
+				cout << "Znaleziono " << NumOfInstances << " wystąpienie/wystąpień \"" << Element << "\" w strukturze\n";
+				cout << "Czas wykonywania: " << MeasureTime(OperationStart, OperationEnd) << " mikrosekund\n";
+				system("pause");
+
 				continue;
 			}
 

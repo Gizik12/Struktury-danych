@@ -1,5 +1,4 @@
 #include "DataStructure.h"
-
 #ifndef SINGLY_LINKED_LIST_HEAD_TAIL_H
 #define SINGLY_LINKED_LIST_HEAD_TAIL_H
 
