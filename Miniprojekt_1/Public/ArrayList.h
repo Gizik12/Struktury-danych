@@ -30,8 +30,8 @@ public:
 	// Usuwa element w wybranym miejscu tablicy.
 	virtual void RemoveAt(unsigned int Index) override;
 
-	// Szuka podanego elementu w tablicy i zwraca indeks jego pierwszej instancji.
-	int SearchForFirstInstance(DataType Element);
+	// Przeszukuje strukturę od początku do końca w celu znalezienia wybranego elementu w strukturze i zwraca liczbę jego wystąpień
+	virtual unsigned int SearchForElementForward(DataType Element) override;
 
 	// Zwraca maksymalną pojemność tablicy.
 	unsigned int GetCapacity() const { return m_Capacity; }
@@ -173,17 +173,19 @@ void ArrayList<DataType>::RemoveAt(unsigned int Index)
 }
 
 template<typename DataType>
-int ArrayList<DataType>::SearchForFirstInstance(DataType Element)
+unsigned int ArrayList<DataType>::SearchForElementForward(DataType Element)
 {
+	unsigned int NumOfInstances = 0; // Licznik wystąpień elementu
+
 	for (unsigned int i = 0; i < DataStructure<DataType>::m_Size; i++)
 	{
 		if (m_Elements[i] == Element)
 		{
-			return i; // Zwraca indeks pierwszej instancji szukanego elementu.
+			NumOfInstances++; // Zwiększa liczbę wystąpień
 		}
 	}
 
-	return -1; // Zwraca błąd./Brak podanego elementu w tablicy.
+	return NumOfInstances; // Zwraca liczbę wystąpień elementu w strukturze
 }
 
 template<typename DataType>
