@@ -1,7 +1,7 @@
 #include <iostream>
 #include <chrono>
 #include "Public/DataStructure.h"
-#include "PublicArrayList.h"
+#include "Public/ArrayList.h"
 #include "Public/SinglyLinkedList.h"
 #include "Public/SinglyLinkedListHeadTail.h"
 #include "Public/DoublyLinkedList.h"

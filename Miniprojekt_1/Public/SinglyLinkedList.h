@@ -1,194 +1,228 @@
-#include <iostream>
+#include "DataStructure.h"
 #ifndef SINGLY_LINKED_LIST
 #define SINGLY_LINKED_LIST
 
+// Węzeł
 template<typename DataType>
-class SinglyLinkedList_Node
+class SinglyLinkedList_Node final
 {
-private:
-	DataType data;  // Wartość węzła.
-	SinglyLinkedList_Node* next; 	// Wskaźnik na następny element.
 public:
-	SinglyLinkedList_Node(DataType d) // Konstruktor węzła (ustawienie domyślych danych).
-	{
-		this->data = d;
-		this->next = nullptr;
-	}
+    // Konstruktor.
+    SinglyLinkedList_Node(DataType Data);
+
+    // Zwraca wartość węzła.
+    DataType GetData() const { return m_Data; }
+
+    // Zwraca następny węzeł.
+    SinglyLinkedList_Node<DataType>* GetNextNode() const { return m_NextNode; }
+
+    // Ustawia następny węzeł.
+    void SetNextNode(SinglyLinkedList_Node<DataType>* NextNode) { m_NextNode = NextNode; }
+
+private:
+    DataType m_Data;                                    // Wartość węzła.
+    SinglyLinkedList_Node<DataType>* m_NextNode;        // Wskaźnik na następny węzeł.
+};
+
+// Lista
+template<typename DataType>
+class SinglyLinkedList final : public DataStructure<DataType>
+{
+public:
+    // Konstruktor.
+    SinglyLinkedList();
+
+    // Destruktor.
+    ~SinglyLinkedList();
+
+    // Dodaje węzeł na początku listy.
+    virtual void PushFront(DataType Element) override;
+
+    // Dodaje węzeł na końcu listy.
+    virtual void PushBack(DataType Element) override;
+
+    // Usuwa węzeł na początku listy.
+    virtual void PopFront() override;
+
+    // Usuwa węzeł na końcu listy.
+    virtual void PopBack() override;
+
+    // Dodaje węzeł w wybrane miejsce na liście.
+    virtual void Insert(DataType Element, unsigned int Index) override;
+
+    // Usuwa węzeł na określonej pozycji listy.
+    virtual void RemoveAt(unsigned int Index) override;
+
+    // Przeszukuje strukturę od początku do końca w celu znalezienia wybranego elementu w strukturze i zwraca liczbę jego wystąpień
+    virtual unsigned int SearchForElementForward(DataType Element) override;
+
+private:
+    SinglyLinkedList_Node<DataType>* m_HeadNode;       // Pierwszy element listy.
 };
 
 template<typename DataType>
-class SinglyLinkedList
-{
-private:
-	unsigned int m_Size;	// Liczba elementów w tablicy.
-	SinglyLinkedList_Node<DataType>* firstElement;		// Wskaźnik na pierwszy element tablicy.
+SinglyLinkedList_Node<DataType>::SinglyLinkedList_Node(DataType Data)
+    : m_Data(Data), m_NextNode(nullptr) { }
 
-public:
-	// Konstruktor
-	SinglyLinkedList();
-
-	// Destruktor
-	~SinglyLinkedList();
-
-	// Zwraca liczbę elementów w tablicy.
-	int GetSize() const { return m_Size; }
-
-	// Dodaje element na początku listy.
-	void pushFront(DataType Element);
-
-	// Dodaje element na końcu listy.
-	void pushBack(DataType Element);
-
-	// Dodaje element na określonej pozycji listy.
-	void addAtIndex(DataType Element, unsigned int Index);
-
-	// Usuwa element na początku listy.
-	void popFront();
-
-	// Usuwa element na końcu listy.
-	void popBack();
-
-	// Usuwa element na określonej pozycji listy.
-	void subtractAtIndex(unsigned int Index);
-
-};
 template<typename DataType>
 SinglyLinkedList<DataType>::SinglyLinkedList()
-{
-	this->m_Size = 0;
-	this->firstElement = nullptr;
-}
+    : m_HeadNode(nullptr) { }
 
 template<typename DataType>
-SinglyLinkedList<DataType>::~SinglyLinkedList()
-{
-	while(this->m_Size == 0)
-	{
-		popFront();
-	}
-}
-
-template<typename DataType>
-void SinglyLinkedList<DataType>::pushFront(DataType Element)
-{
-	SinglyLinkedList_Node<DataType>* newNode = new SinglyLinkedList_Node<DataType>(Element); // Tworzenie nowego węzła z podanym elementem.
-	if (this->m_Size == 0)
-	{
-		this->firstElement = newNode;
-	}
-	else
-	{
-		newNode->getNext() = this->firstElement; // Ustawienie wskaźnika next nowego węzła na obecny pierwszy element.
-		this->firstElement = newNode; 		// Nowy węzeł staje się pierwszym elementem listy.
-	}
-	this->m_Size++;
-}
-
-template<typename DataType>
-void SinglyLinkedList<DataType>::pushBack(DataType Element)
-{
-	SinglyLinkedList_Node<DataType>* newNode = new SinglyLinkedList_Node<DataType>(Element); // Tworzenie nowego węzła z podanym elementem.
-	if (this->m_Size == 0)
-	{
-		this->firstElement = newNode;
-	}
-	else
-	{
-		SinglyLinkedList_Node<DataType>* currentNode = this->firstElement;
-		while (currentNode->next != nullptr) // Pętla szukająca ostaniego elementu listy.
-		{
-			currentNode = currentNode->getNext(); // Przechodzi dalej po kolejnych elementach listy.
-		}
-		currentNode->getNext() = newNode; // Ustawienie wskaźnika ostatniego elementu na nowy ostatni element.
-	}
-	this->m_Size++;
-}
-
-template<typename DataType>
-void SinglyLinkedList<DataType>::addAtIndex(DataType Element, unsigned int Index)
-{
-	if (Index >= this->m_Size) // Jeśli indeks jest równy lub większy od rozmiaru tablicy dodajemy element na koncu tablicy.
-	{
-		pushBack(Element);
-		return;
-	}
-	if (Index == 0) // Jeśli indeks jest równy 0 dodajemy element na początku tablicy.
-	{
-		pushFront(Element);
-		return;
-	}
-	SinglyLinkedList_Node<DataType>* newNode = new SinglyLinkedList_Node<DataType>(Element); // Tworzenie nowego węzła z podanym elementem.
-	SinglyLinkedList_Node<DataType>* currentNode = this->firstElement;
-	for (unsigned int i = 0; i < Index - 1; i++) // Przesuń się do elementu poprzedzającego wstawiany indeks.
+SinglyLinkedList<DataType>::~SinglyLinkedList() 
+{ 
+    if (!DataStructure<DataType>::IsEmpty())
     {
-        currentNode = currentNode->getNext();
+        SinglyLinkedList_Node<DataType>* CurrentNode = m_HeadNode;
+        SinglyLinkedList_Node<DataType>* NextNode = nullptr;
+
+        while (CurrentNode != nullptr)
+        {
+            NextNode = CurrentNode->GetNextNode();
+            delete CurrentNode;
+            CurrentNode = NextNode;
+        }
     }
-	newNode->getNext() = currentNode->getNext(); // Nowy element wskazuje na następny element.
-    currentNode->getNext() = newNode; // Poprzedni element wskazuje na nowy element.
-
-	this->m_Size++;
-
 }
 
 template<typename DataType>
-void SinglyLinkedList<DataType>::popFront()
+void SinglyLinkedList<DataType>::PushFront(DataType Element)
 {
-	if (this->m_Size != 0)
-	{
-		SinglyLinkedList<DataType>* currentNode = this->firstElement;
-		this->firstElement = this->firstElement->getNext(); // Przesuwa wskaźnik na pierwszy element na następny.
-		delete currentNode; // Usuwa pierwszy element.
-		this->m_Size--; // Zmniejsz licznik elementów.
-	}
+    SinglyLinkedList_Node<DataType>* NewNode = new SinglyLinkedList_Node<DataType>(Element); // Utworzenie nowego węzła.
+    NewNode->SetNextNode(m_HeadNode);    // Następnym węzłem NewNode jest obecny HeadNode.
+    m_HeadNode = NewNode;                // NewNode zostaje ustawiony jako nowy HeadNode.
+    ++DataStructure<DataType>::m_Size;
 }
 
 template<typename DataType>
-void SinglyLinkedList<DataType>::popBack()
+void SinglyLinkedList<DataType>::PushBack(DataType Element)
 {
-	if (this->m_Size != 0)
-	{
-		if (this->m_Size == 1)
-		{
-			delete this->firstElement;
-			this->firstElement = nullptr;
-			this->m_Size = 0;
-			return;
-		}
-		SinglyLinkedList_Node<DataType>* currentNode = this->firstElement;
-		while (currentNode->next->next != nullptr) // Pętla znajduje przedostatni element.
-		{
-			currentNode = currentNode->next;
-		}
-    	delete currentNode->getNext(); // Usuwa ostatni element.
-    	currentNode->getNext() = nullptr; // Ustawia wskaźnik next ostatniego elementu na nullptr.
-    	m_Size--;
-	}
+    SinglyLinkedList_Node<DataType>* NewNode = new SinglyLinkedList_Node<DataType>(Element); // Utworzenie nowego węzła.
+    if (DataStructure<DataType>::IsEmpty())
+    {
+        m_HeadNode = NewNode; // Jeśli lista jest pusta, nowy węzeł jest zarówno głową, jak i ogonem.
+    }
+    else
+    {
+        SinglyLinkedList_Node<DataType>* CurrentNode = m_HeadNode;
+        while (CurrentNode->GetNextNode() != nullptr)
+        {
+            CurrentNode = CurrentNode->GetNextNode(); // Przechodzenie do ostatniego węzła na liście.
+        }
+        CurrentNode->SetNextNode(NewNode); // Ustawienie następnego węzła ostatniego węzła na nowy węzeł.
+    }
+    ++DataStructure<DataType>::m_Size;
 }
 
 template<typename DataType>
-void SinglyLinkedList<DataType>::subtractAtIndex(unsigned int Index)
+void SinglyLinkedList<DataType>::PopFront()
 {
-	if (this->m_Size != 0)
-	{
-		if (Index >= this->m_Size) // Jeśli indeks jest równy lub większy od rozmiaru tablicy wypisujemy ostrzeżenie.
-		{
-			std::cout << "Indeks wykracza poza zakres listy" << std::endl;
-			return;
-		}
-		if (Index == 0) // Jeśli indeks jest równy 0 usuwamy element na początku tablicy.
-		{
-			popFront();
-			return;
-		}
-		SinglyLinkedList_Node<DataType>* currentNode = this->firstElement;
-		for (unsigned int i = 0; i < Index - 1; i++) // Przesuwamy się do elementu poprzedzającego wstawiany indeks.
-		{
-			currentNode = currentNode->getNext();
-		}
-		SinglyLinkedList<DataType>* temp = currentNode->getNext(); // Zachowaj wskaźnik do elementu, który chcemy usunąć.
-		currentNode->getNext() = temp->getNext(); // Zaktualizuj wskaźnik poprzedniego elementu, aby ominąć element, który usuwamy.
-		delete temp; // Usuń element z listy.
-		m_Size--; // Zmniejsz licznik elementów.
-	}
+    if (!DataStructure<DataType>::IsEmpty())
+    {
+        SinglyLinkedList_Node<DataType>* OldHeadNode = m_HeadNode; // Zapamiętanie starego HeadNode.
+        m_HeadNode = m_HeadNode->GetNextNode(); // HeadNode staje się następnym węzłem.
+        delete OldHeadNode; // Usunięcie starego HeadNode.
+        --DataStructure<DataType>::m_Size;
+    }
 }
-#endif
+
+template<typename DataType>
+void SinglyLinkedList<DataType>::PopBack()
+{
+    if (!DataStructure<DataType>::IsEmpty())
+    {
+        if (m_HeadNode->GetNextNode() == nullptr) // Jeśli jest tylko jeden węzeł.
+        {
+            delete m_HeadNode;
+            m_HeadNode = nullptr;
+        }
+        else
+        {
+            SinglyLinkedList_Node<DataType>* CurrentNode = m_HeadNode;
+            while (CurrentNode->GetNextNode()->GetNextNode() != nullptr)
+            {
+                CurrentNode = CurrentNode->GetNextNode(); // Przechodzenie do przedostatniego węzła.
+            }
+            delete CurrentNode->GetNextNode(); // Usunięcie ostatniego węzła.
+            CurrentNode->SetNextNode(nullptr); // Przypisanie nullptr do węzła przedostatniego jako nowego ostatniego węzła.
+        }
+        --DataStructure<DataType>::m_Size;
+    }
+}
+
+template<typename DataType>
+void SinglyLinkedList<DataType>::Insert(DataType Element, unsigned int Index)
+{
+    if (Index == 0)
+    {
+        PushFront(Element); // Wstawienie na początek listy.
+    }
+    else if (Index >= DataStructure<DataType>::m_Size)
+    {
+        PushBack(Element); // Wstawienie na koniec listy.
+    }
+    else
+    {
+        SinglyLinkedList_Node<DataType>* NewNode = new SinglyLinkedList_Node<DataType>(Element); // Utworzenie nowego węzła.
+        SinglyLinkedList_Node<DataType>* CurrentNode = m_HeadNode;
+
+        for (unsigned int i = 0; i < Index - 1; ++i)
+        {
+            CurrentNode = CurrentNode->GetNextNode(); // Przejście do węzła poprzedzającego miejsce wstawienia.
+        }
+        NewNode->SetNextNode(CurrentNode->GetNextNode()); // Nowy węzeł wskazuje na następny węzeł obecnego węzła.
+        CurrentNode->SetNextNode(NewNode); // Obecny węzeł wskazuje na nowy węzeł jako następny.
+        ++DataStructure<DataType>::m_Size;
+    }
+}
+
+template<typename DataType>
+void SinglyLinkedList<DataType>::RemoveAt(unsigned int Index)
+{
+    if (!DataStructure<DataType>::IsEmpty())
+    {
+        if (Index == 0)
+        {
+            PopFront(); // Usunięcie pierwszego elementu.
+        }
+        else if (Index >= DataStructure<DataType>::m_Size - 1)
+        {
+            PopBack(); // Usunięcie ostatniego elementu.
+        }
+        else
+        {
+            SinglyLinkedList_Node<DataType>* CurrentNode = m_HeadNode;
+            for (unsigned int i = 0; i < Index - 1; ++i)
+            {
+                CurrentNode = CurrentNode->GetNextNode(); // Przejście do węzła poprzedzającego usuwany.
+            }
+            SinglyLinkedList_Node<DataType>* NodeToRemove = CurrentNode->GetNextNode(); // Węzeł do usunięcia.
+            CurrentNode->SetNextNode(NodeToRemove->GetNextNode()); // Przepięcie wskaźnika na następny.
+            delete NodeToRemove; // Usunięcie węzła.
+            --DataStructure<DataType>::m_Size;
+        }
+    }
+}
+
+template<typename DataType>
+unsigned int SinglyLinkedList<DataType>::SearchForElementForward(DataType Element)
+{
+    if (!DataStructure<DataType>::IsEmpty())
+    {
+        SinglyLinkedList_Node<DataType>* CurrentNode = m_HeadNode; // Przeszukiwanie od początku.
+        unsigned int NumberOfInstances = 0; // Licznik wystąpień elementu
+
+        while (CurrentNode != nullptr)
+        {
+            if (CurrentNode->GetData() == Element)
+            {
+                ++NumberOfInstances; // Zwiększa licznik wystąpień
+            }
+            CurrentNode = CurrentNode->GetNextNode();
+        }
+        return NumberOfInstances; // Zwraca liczbę wystąpień
+    }
+    return 0;
+}
+
+#endif // SINGLY_LINKED_LIST
