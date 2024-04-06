@@ -1,10 +1,12 @@
 #include <iostream>
 #include <chrono>
 #include "Public/DataStructure.h"
-#include "Public/ArrayList.h"
+#include "PublicArrayList.h"
 #include "Public/SinglyLinkedList.h"
 #include "Public/SinglyLinkedListHeadTail.h"
 #include "Public/DoublyLinkedList.h"
+
+using namespace std;
 
 static long long MeasureTime(const chrono::steady_clock::time_point Start, const chrono::steady_clock::time_point End)
 {
@@ -28,9 +30,9 @@ int main()
 			cout << "Pojemność ArrayList: " << Capacity << endl;
 			if (Capacity <= 0)
 			{
-				cout << "Musisz podać pojemność dla ArrayList\n";
+				cout << "Musisz podać pojemność dla ArrayList!\n";
 			}
-			cout << "\nWybierz strukturę danych:\n1. ArrayList\n2. Singly Linked List (head)\n3. Singly Linked List (head & tail)\n4. Doubly Linked List\n5. Nowy rozmiar\n6. Wyjdź\n";
+			cout << "\nWybierz strukturę danych:\n1. ArrayList\n2. Singly Linked List (head)\n3. Singly Linked List (head & tail)\n4. Doubly Linked List\n5. Nowa pojemność\n6. Wyjdź\n";
 			cin >> DataStructureType;
 		} while (DataStructureType != '1' && DataStructureType != '2' && DataStructureType != '3' && DataStructureType != '4' && DataStructureType != '5' && DataStructureType != '6');
 
@@ -53,7 +55,8 @@ int main()
 		}
 
 		/*case '2':
-			Miejsce na klasę SinglyLinkedList
+			SinglyLinkedList<int>* SLL = new SinglyLinkedList<int>*();
+			NewDataStructure = SLL;
 			break;
 
 		case '3':
@@ -89,13 +92,13 @@ int main()
 			do
 			{
 				system("cls");
+				cout << "Wybierz operację:\n1. Wyświetl rozmiar\n2. Dodaj element na początku\n3. Dodaj element na końcu\n4. Dodaj element w wybranym miejscu\n5. Usuń element z przodu\n6. Usuń element na końcu\n7. Usuń element w wybranym miejscu\n8. Wyszukaj element w strukturze\n9. Cofnij\n";
 				if (PickedDataStructure->IsEmpty())
 				{
-					cout << "Brak elementów\n";
+					cout << "Brak elementów!\n";
 				}
-				cout << "\nWybierz operację:\n1. Wyświetl rozmiar\n2. Dodaj element na początku\n3. Dodaj element na końcu\n4. Dodaj element w wybranym miejscu\n5. Usuń element z przodu\n6. Usuń element na końcu\n7. Usuń element w wybranym miejscu\n8. Cofnij\n";
 				cin >> Option;
-			} while (Option != '1' && Option != '2' && Option != '3' && Option != '4' && Option != '5' && Option != '6' && Option != '7' && Option != '8');
+			} while (Option != '1' && Option != '2' && Option != '3' && Option != '4' && Option != '5' && Option != '6' && Option != '7' && Option != '8' && Option != '9');
 
 			switch (Option)
 			{
@@ -167,16 +170,67 @@ int main()
 					cin >> Index;
 
 					PickedDataStructure->RemoveAt(Index);
-					continue;
 				}
 				else
 				{
 					PickedDataStructure->PopFront();
-					continue;
 				}
+				continue;
 			}
 
 			case '8':
+			{
+				DoublyLinkedList<int>* DLL = dynamic_cast<DoublyLinkedList<int>*>(PickedDataStructure);
+				if (DLL)
+				{
+					char Choice;
+					do
+					{
+						cout << "Wybierz kierunek przeszukiwania (1 - od początku do końca, 2 - od końca do początku): ";
+						cin >> Choice;
+					} while (Choice != '1' && Choice != '2');
+
+					int Element;
+
+					cout << "Podaj element: ";
+					cin >> Element;
+
+					unsigned int NumOfInstances = 0;
+
+					system("cls");
+					cout << "Szukam " << Element << " w strukturze...\n";
+					switch (Choice)
+					{
+					case '1':
+						NumOfInstances = DLL->SearchForElementForward(Element);
+						break;
+
+					case '2':
+						NumOfInstances = DLL->SearchForElementBackward(Element);
+						break;
+					}
+					cout << "Znaleziono " << NumOfInstances << " wystąpień \"" << Element << "\" w strukturze\n";
+					system("pause");
+				}
+				else
+				{
+					int Element;
+
+					cout << "Podaj element: ";
+					cin >> Element;
+
+					unsigned int NumOfInstances = 0;
+
+					system("cls");
+					cout << "Szukam " << Element << " w strukturze...\n";
+					NumOfInstances = PickedDataStructure->SearchForElementForward(Element);
+					cout << "Znaleziono " << NumOfInstances << " wystąpienie/wystąpień \"" << Element << "\" w strukturze\n";
+					system("pause");
+				}
+				continue;
+			}
+
+			case '9':
 				break;
 
 			default:

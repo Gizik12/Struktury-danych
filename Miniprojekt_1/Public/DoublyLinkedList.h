@@ -63,8 +63,14 @@ public:
 	// Szuka podanego elementu w tablicy i zwraca adres jego pierwszej instancji.
 	DoublyLinkedList_Node<DataType>* SearchForward(DataType Element);
 
+	// Przeszukuje strukturę od początku do końca w celu znalezienia wybranego elementu w strukturze i zwraca liczbę jego wystąpień
+	virtual unsigned int SearchForElementForward(DataType Element) override;
+
 	// Szuka podanego elementu w tablicy i zwraca adres jego pierwszej instancji.
 	DoublyLinkedList_Node<DataType>* SearchBackward(DataType Element);
+
+	// Przeszukuje strukturę od końca do początku w celu znalezienia wybranego elementu w strukturze i zwraca liczbę jego wystąpień
+	unsigned int SearchForElementBackward(DataType Element);
 
 	// Zwraca "głowę" listy.
 	DoublyLinkedList_Node<DataType>* GetHeadNode() const { return m_HeadNode; }
@@ -295,6 +301,50 @@ DoublyLinkedList_Node<DataType>* DoublyLinkedList<DataType>::SearchForward(DataT
 }
 
 template<typename DataType>
+unsigned int DoublyLinkedList<DataType>::SearchForElementForward(DataType Element)
+{
+	if (!DataStructure<DataType>::IsEmpty())
+	{
+		DoublyLinkedList_Node<DataType>* CurrentNode = m_HeadNode; // Szukanie od początku listy.
+		unsigned int NumberOfInstances = 0; // Licznik wystąpień elementu
+
+		do
+		{
+			if (CurrentNode->GetData() == Element)
+			{
+				NumberOfInstances++; // Zwiększa licznik wystąpień
+			}
+			CurrentNode = CurrentNode->GetNextNode();
+		} while (CurrentNode != nullptr);
+
+		return NumberOfInstances; // Zwraca liczbę wystąpień
+	}
+	return 0;
+}
+
+template<typename DataType>
+unsigned int DoublyLinkedList<DataType>::SearchForElementBackward(DataType Element)
+{
+	if (!DataStructure<DataType>::IsEmpty())
+	{
+		DoublyLinkedList_Node<DataType>* CurrentNode = m_TailNode; // Szukanie od końca listy.
+		unsigned int NumberOfInstances = 0; // Licznik wystąpień elementu
+
+		do
+		{
+			if (CurrentNode->GetData() == Element)
+			{
+				NumberOfInstances++; // Zwiększa licznik wystąpień
+			}
+			CurrentNode = CurrentNode->GetPreviousNode();
+		} while (CurrentNode != nullptr);
+
+		return NumberOfInstances; // Zwraca liczbę wystąpień
+	}
+	return 0;
+}
+
+template<typename DataType>
 DoublyLinkedList_Node<DataType>* DoublyLinkedList<DataType>::SearchBackward(DataType Element)
 {
 	DoublyLinkedList_Node<DataType>* CurrentNode = m_TailNode; // Szukanie od końca listy.
@@ -309,6 +359,8 @@ DoublyLinkedList_Node<DataType>* DoublyLinkedList<DataType>::SearchBackward(Data
 	}
 	return nullptr; // Jeśli nie znajdzie podanego elementu zwraca nullptr.
 }
+
+
 
 template<typename DataType>
 void DoublyLinkedList<DataType>::InsertBetween(DoublyLinkedList_Node<DataType>* NewNode, DoublyLinkedList_Node<DataType>* PreviousNode, DoublyLinkedList_Node<DataType>* NextNode)
