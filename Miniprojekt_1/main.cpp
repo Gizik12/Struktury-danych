@@ -3,7 +3,7 @@
 #include "Public/DataStructure.h"
 #include "Public/ArrayList.h"
 #include "Public/SinglyLinkedList.h"
-#include "PublicSinglyLinkedListHeadTail.h"
+#include "Public/SinglyLinkedListHeadTail.h"
 #include "Public/DoublyLinkedList.h"
 #include "Public/DataGenerator.h"
 

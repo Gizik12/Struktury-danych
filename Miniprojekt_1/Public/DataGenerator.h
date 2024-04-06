@@ -1,5 +1,6 @@
 #ifndef DATA_GENERATOR
 #define DATA_GENERATOR
+
 using namespace std;
 
 // Funkcja do generowania losowych liczb całkowitych z zakresu [min, max]
