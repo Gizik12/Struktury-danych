@@ -56,6 +56,9 @@ public:
     // Przeszukuje strukturę od początku do końca w celu znalezienia wybranego elementu w strukturze i zwraca liczbę jego wystąpień
     virtual unsigned int SearchForElementForward(DataType Element) override;
 
+    // Tworzy kopie struktury (stosowane w badaniach)
+    virtual DataStructure<DataType>* Clone() const override { return new SinglyLinkedList<DataType>(); }
+
 private:
     SinglyLinkedList_Node<DataType>* m_HeadNode;       // Pierwszy element listy.
 };
@@ -69,8 +72,8 @@ SinglyLinkedList<DataType>::SinglyLinkedList()
     : m_HeadNode(nullptr) { }
 
 template<typename DataType>
-SinglyLinkedList<DataType>::~SinglyLinkedList() 
-{ 
+SinglyLinkedList<DataType>::~SinglyLinkedList()
+{
     if (!DataStructure<DataType>::IsEmpty())
     {
         SinglyLinkedList_Node<DataType>* CurrentNode = m_HeadNode;
@@ -98,6 +101,7 @@ template<typename DataType>
 void SinglyLinkedList<DataType>::PushBack(DataType Element)
 {
     SinglyLinkedList_Node<DataType>* NewNode = new SinglyLinkedList_Node<DataType>(Element); // Utworzenie nowego węzła.
+
     if (DataStructure<DataType>::IsEmpty())
     {
         m_HeadNode = NewNode; // Jeśli lista jest pusta, nowy węzeł jest zarówno głową, jak i ogonem.

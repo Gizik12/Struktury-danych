@@ -1,5 +1,4 @@
 #include "DataStructure.h"
-
 #ifndef SINGLY_LINKED_LIST_HEAD_TAIL_H
 #define SINGLY_LINKED_LIST_HEAD_TAIL_H
 
@@ -57,6 +56,9 @@ public:
     // Przeszukuje strukturę od początku do końca w celu znalezienia wybranego elementu w strukturze i zwraca liczbę jego wystąpień
     virtual unsigned int SearchForElementForward(DataType Element) override;
 
+    // Tworzy kopie struktury (stosowane w badaniach)
+    virtual DataStructure<DataType>* Clone() const override { return new SinglyLinkedList_HeadTail<DataType>(); }
+
 private:
     SinglyLinkedList_Node_HeadTail<DataType>* m_HeadNode;       // Pierwszy element listy.
     SinglyLinkedList_Node_HeadTail<DataType>* m_TailNode;       // Ostatni element listy.
@@ -71,8 +73,8 @@ SinglyLinkedList_HeadTail<DataType>::SinglyLinkedList_HeadTail()
     : m_HeadNode(nullptr), m_TailNode(nullptr) {}
 
 template<typename DataType>
-SinglyLinkedList_HeadTail<DataType>::~SinglyLinkedList_HeadTail() 
-{ 
+SinglyLinkedList_HeadTail<DataType>::~SinglyLinkedList_HeadTail()
+{
     if (!DataStructure<DataType>::IsEmpty())
     {
         SinglyLinkedList_Node_HeadTail<DataType>* CurrentNode = m_HeadNode;
@@ -90,10 +92,10 @@ SinglyLinkedList_HeadTail<DataType>::~SinglyLinkedList_HeadTail()
 template<typename DataType>
 void SinglyLinkedList_HeadTail<DataType>::PushFront(DataType Element)
 {
-    SinglyLinkedList_Node_HeadTail<DataType>* NewNode = new SinglyLinkedList_Node_HeadTail<DataType>(Element); 
-    NewNode->SetNextNode(m_HeadNode);    
-    m_HeadNode = NewNode;                
-    if (m_TailNode == nullptr)           
+    SinglyLinkedList_Node_HeadTail<DataType>* NewNode = new SinglyLinkedList_Node_HeadTail<DataType>(Element);
+    NewNode->SetNextNode(m_HeadNode);
+    m_HeadNode = NewNode;
+    if (m_TailNode == nullptr)
     {
         m_TailNode = NewNode;
     }
@@ -103,16 +105,16 @@ void SinglyLinkedList_HeadTail<DataType>::PushFront(DataType Element)
 template<typename DataType>
 void SinglyLinkedList_HeadTail<DataType>::PushBack(DataType Element)
 {
-    SinglyLinkedList_Node_HeadTail<DataType>* NewNode = new SinglyLinkedList_Node_HeadTail<DataType>(Element); 
+    SinglyLinkedList_Node_HeadTail<DataType>* NewNode = new SinglyLinkedList_Node_HeadTail<DataType>(Element);
     if (DataStructure<DataType>::IsEmpty())
     {
-        m_HeadNode = NewNode; 
+        m_HeadNode = NewNode;
     }
     else
     {
-        m_TailNode->SetNextNode(NewNode); 
-        m_TailNode = NewNode; 
+        m_TailNode->SetNextNode(NewNode);
     }
+    m_TailNode = NewNode;
     ++DataStructure<DataType>::m_Size;
 }
 
@@ -121,11 +123,11 @@ void SinglyLinkedList_HeadTail<DataType>::PopFront()
 {
     if (!DataStructure<DataType>::IsEmpty())
     {
-        SinglyLinkedList_Node_HeadTail<DataType>* OldHeadNode = m_HeadNode; 
-        m_HeadNode = m_HeadNode->GetNextNode(); 
-        delete OldHeadNode; 
+        SinglyLinkedList_Node_HeadTail<DataType>* OldHeadNode = m_HeadNode;
+        m_HeadNode = m_HeadNode->GetNextNode();
+        delete OldHeadNode;
         --DataStructure<DataType>::m_Size;
-        if (m_HeadNode == nullptr) 
+        if (m_HeadNode == nullptr)
         {
             m_TailNode = nullptr;
         }
@@ -137,7 +139,7 @@ void SinglyLinkedList_HeadTail<DataType>::PopBack()
 {
     if (!DataStructure<DataType>::IsEmpty())
     {
-        if (m_HeadNode == m_TailNode) 
+        if (m_HeadNode == m_TailNode)
         {
             delete m_HeadNode;
             m_HeadNode = nullptr;
@@ -148,11 +150,11 @@ void SinglyLinkedList_HeadTail<DataType>::PopBack()
             SinglyLinkedList_Node_HeadTail<DataType>* CurrentNode = m_HeadNode;
             while (CurrentNode->GetNextNode() != m_TailNode)
             {
-                CurrentNode = CurrentNode->GetNextNode(); 
+                CurrentNode = CurrentNode->GetNextNode();
             }
-            delete m_TailNode; 
-            m_TailNode = CurrentNode; 
-            m_TailNode->SetNextNode(nullptr); 
+            delete m_TailNode;
+            m_TailNode = CurrentNode;
+            m_TailNode->SetNextNode(nullptr);
         }
         --DataStructure<DataType>::m_Size;
     }
@@ -163,11 +165,11 @@ void SinglyLinkedList_HeadTail<DataType>::Insert(DataType Element, unsigned int 
 {
     if (Index == 0)
     {
-        PushFront(Element); 
+        PushFront(Element);
     }
     else if (Index >= DataStructure<DataType>::m_Size)
     {
-        PushBack(Element); 
+        PushBack(Element);
     }
     else
     {
@@ -175,10 +177,10 @@ void SinglyLinkedList_HeadTail<DataType>::Insert(DataType Element, unsigned int 
         SinglyLinkedList_Node_HeadTail<DataType>* CurrentNode = m_HeadNode;
         for (unsigned int i = 0; i < Index - 1; ++i)
         {
-            CurrentNode = CurrentNode->GetNextNode(); 
+            CurrentNode = CurrentNode->GetNextNode();
         }
-        NewNode->SetNextNode(CurrentNode->GetNextNode()); 
-        CurrentNode->SetNextNode(NewNode); 
+        NewNode->SetNextNode(CurrentNode->GetNextNode());
+        CurrentNode->SetNextNode(NewNode);
         ++DataStructure<DataType>::m_Size;
     }
 }
@@ -190,22 +192,22 @@ void SinglyLinkedList_HeadTail<DataType>::RemoveAt(unsigned int Index)
     {
         if (Index == 0)
         {
-            PopFront(); 
+            PopFront();
         }
         else if (Index >= DataStructure<DataType>::m_Size - 1)
         {
-            PopBack(); 
+            PopBack();
         }
         else
         {
             SinglyLinkedList_Node_HeadTail<DataType>* CurrentNode = m_HeadNode;
             for (unsigned int i = 0; i < Index - 1; ++i)
             {
-                CurrentNode = CurrentNode->GetNextNode(); 
+                CurrentNode = CurrentNode->GetNextNode();
             }
-            SinglyLinkedList_Node_HeadTail<DataType>* NodeToRemove = CurrentNode->GetNextNode(); 
-            CurrentNode->SetNextNode(NodeToRemove->GetNextNode()); 
-            delete NodeToRemove; 
+            SinglyLinkedList_Node_HeadTail<DataType>* NodeToRemove = CurrentNode->GetNextNode();
+            CurrentNode->SetNextNode(NodeToRemove->GetNextNode());
+            delete NodeToRemove;
             --DataStructure<DataType>::m_Size;
         }
     }
@@ -216,18 +218,18 @@ unsigned int SinglyLinkedList_HeadTail<DataType>::SearchForElementForward(DataTy
 {
     if (!DataStructure<DataType>::IsEmpty())
     {
-        SinglyLinkedList_Node_HeadTail<DataType>* CurrentNode = m_HeadNode; 
-        unsigned int NumberOfInstances = 0; 
+        SinglyLinkedList_Node_HeadTail<DataType>* CurrentNode = m_HeadNode;
+        unsigned int NumberOfInstances = 0;
 
         while (CurrentNode != nullptr)
         {
             if (CurrentNode->GetData() == Element)
             {
-                ++NumberOfInstances; 
+                ++NumberOfInstances;
             }
             CurrentNode = CurrentNode->GetNextNode();
         }
-        return NumberOfInstances; 
+        return NumberOfInstances;
     }
     return 0;
 }

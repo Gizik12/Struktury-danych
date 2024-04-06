@@ -34,7 +34,7 @@ public:
 	virtual unsigned int SearchForElementForward(DataType Element) override;
 
 	// Tworzy kopie struktury (stosowane w badaniach)
-	virtual DataStructure<DataType>* Clone() const override { return new ArrayList(m_Capacity); }
+	virtual DataStructure<DataType>* Clone() const override { return new ArrayList<DataType>(m_Capacity); }
 
 	// Zwraca maksymalną pojemność tablicy.
 	unsigned int GetCapacity() const { return m_Capacity; }
