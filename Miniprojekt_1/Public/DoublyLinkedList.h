@@ -60,17 +60,14 @@ public:
 	// Usuwa węzeł na określonej pozycji listy.
 	virtual void RemoveAt(unsigned int Index) override;
 
-	// Szuka podanego elementu w tablicy i zwraca adres jego pierwszej instancji.
-	DoublyLinkedList_Node<DataType>* SearchForward(DataType Element);
-
 	// Przeszukuje strukturę od początku do końca w celu znalezienia wybranego elementu w strukturze i zwraca liczbę jego wystąpień
 	virtual unsigned int SearchForElementForward(DataType Element) override;
 
-	// Szuka podanego elementu w tablicy i zwraca adres jego pierwszej instancji.
-	DoublyLinkedList_Node<DataType>* SearchBackward(DataType Element);
-
 	// Przeszukuje strukturę od końca do początku w celu znalezienia wybranego elementu w strukturze i zwraca liczbę jego wystąpień
 	unsigned int SearchForElementBackward(DataType Element);
+
+	// Tworzy kopie struktury (stosowane w badaniach)
+	virtual DataStructure<DataType>* Clone() const override { return new DoublyLinkedList(); };
 
 	// Zwraca "głowę" listy.
 	DoublyLinkedList_Node<DataType>* GetHeadNode() const { return m_HeadNode; }
@@ -285,22 +282,6 @@ void DoublyLinkedList<DataType>::RemoveAt(unsigned int Index)
 }
 
 template<typename DataType>
-DoublyLinkedList_Node<DataType>* DoublyLinkedList<DataType>::SearchForward(DataType Element)
-{
-	DoublyLinkedList_Node<DataType>* CurrentNode = m_HeadNode; // Szukanie od początku listy.
-
-	while (CurrentNode != nullptr)
-	{
-		if (CurrentNode->GetData() == Element)
-		{
-			return CurrentNode; // Zwraca adres pierwszej instancji podanego elementu.
-		}
-		CurrentNode = CurrentNode->GetNextNode(); // Przechodzenie po następnych węzłach.
-	}
-	return nullptr; // Jeśli nie znajdzie podanego elementu zwraca nullptr.
-}
-
-template<typename DataType>
 unsigned int DoublyLinkedList<DataType>::SearchForElementForward(DataType Element)
 {
 	if (!DataStructure<DataType>::IsEmpty())
@@ -343,24 +324,6 @@ unsigned int DoublyLinkedList<DataType>::SearchForElementBackward(DataType Eleme
 	}
 	return 0;
 }
-
-template<typename DataType>
-DoublyLinkedList_Node<DataType>* DoublyLinkedList<DataType>::SearchBackward(DataType Element)
-{
-	DoublyLinkedList_Node<DataType>* CurrentNode = m_TailNode; // Szukanie od końca listy.
-
-	while (CurrentNode != nullptr)
-	{
-		if (CurrentNode->GetData() == Element)
-		{
-			return CurrentNode; // Zwraca adres pierwszej instancji podanego elementu.
-		}
-		CurrentNode = CurrentNode->GetPreviousNode(); // Przechodzenie po poprzednich węzłach.
-	}
-	return nullptr; // Jeśli nie znajdzie podanego elementu zwraca nullptr.
-}
-
-
 
 template<typename DataType>
 void DoublyLinkedList<DataType>::InsertBetween(DoublyLinkedList_Node<DataType>* NewNode, DoublyLinkedList_Node<DataType>* PreviousNode, DoublyLinkedList_Node<DataType>* NextNode)
