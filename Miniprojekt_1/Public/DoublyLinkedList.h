@@ -1,4 +1,5 @@
 #include "DataStructure.h"
+#include <iostream>
 #ifndef DOUBLY_LINKED_LIST
 #define DOUBLY_LINKED_LIST
 
@@ -68,6 +69,9 @@ public:
 
 	// Tworzy kopie struktury (stosowane w badaniach)
 	virtual DataStructure<DataType>* Clone() const override { return new DoublyLinkedList<DataType>(*this); };
+
+	// Wypisuje dane
+	virtual void PrintData() const override;
 
 	// Zwraca "głowę" listy.
 	DoublyLinkedList_Node<DataType>* GetHeadNode() const { return m_HeadNode; }
@@ -323,6 +327,21 @@ unsigned int DoublyLinkedList<DataType>::SearchForElementBackward(DataType Eleme
 		return NumberOfInstances; // Zwraca liczbę wystąpień
 	}
 	return 0;
+}
+
+template<typename DataType>
+void DoublyLinkedList<DataType>::PrintData() const
+{
+	if (!DataStructure<DataType>::IsEmpty())
+	{
+		DoublyLinkedList_Node<DataType>* CurrentNode = m_HeadNode;
+
+		do
+		{
+			std::cout << CurrentNode->GetData() << std::endl;
+			CurrentNode = CurrentNode->GetNextNode();
+		} while (CurrentNode != nullptr);
+	}
 }
 
 template<typename DataType>

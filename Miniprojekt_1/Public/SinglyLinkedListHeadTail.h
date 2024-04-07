@@ -1,4 +1,5 @@
 #include "DataStructure.h"
+#include <iostream>
 #ifndef SINGLY_LINKED_LIST_HEAD_TAIL_H
 #define SINGLY_LINKED_LIST_HEAD_TAIL_H
 
@@ -58,6 +59,9 @@ public:
 
     // Tworzy kopie struktury (stosowane w badaniach)
     virtual DataStructure<DataType>* Clone() const override { return new SinglyLinkedList_HeadTail<DataType>(*this); }
+
+    // Wypisuje dane
+    virtual void PrintData() const override;
 
 private:
     SinglyLinkedList_Node_HeadTail<DataType>* m_HeadNode;       // Pierwszy element listy.
@@ -232,6 +236,21 @@ unsigned int SinglyLinkedList_HeadTail<DataType>::SearchForElementForward(DataTy
         return NumberOfInstances;
     }
     return 0;
+}
+
+template<typename DataType>
+void SinglyLinkedList_HeadTail<DataType>::PrintData() const
+{
+    if (!DataStructure<DataType>::IsEmpty())
+    {
+        SinglyLinkedList_Node_HeadTail<DataType>* CurrentNode = m_HeadNode;
+
+        do
+        {
+            std::cout << CurrentNode->GetData() << std::endl;
+            CurrentNode = CurrentNode->GetNextNode();
+        } while (CurrentNode != nullptr);
+    }
 }
 
 #endif // SINGLY_LINKED_LIST_HEAD_TAIL_H
