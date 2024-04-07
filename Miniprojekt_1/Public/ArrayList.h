@@ -1,4 +1,5 @@
 #include "DataStructure.h"
+#include <iostream>
 #ifndef ARRAY_LIST
 #define ARRAY_LIST
 
@@ -35,6 +36,9 @@ public:
 
 	// Tworzy kopie struktury (stosowane w badaniach)
 	virtual DataStructure<DataType>* Clone() const override { return new ArrayList<DataType>(*this); }
+
+	// Wypisuje elementy
+	virtual void PrintData() const override;
 
 	// Zwraca maksymalną pojemność tablicy.
 	unsigned int GetCapacity() const { return m_Capacity; }
@@ -104,18 +108,16 @@ void ArrayList<DataType>::PopFront()
 {
 	if (!ArrayList<DataType>::IsEmpty())
 	{
+		if (DataStructure<DataType>::m_Size <= m_Capacity / 2) // Jeśli tablica jest w połowie pusta.
+		{
+			HalveTheCapacity(); // Dwukrotnie zmniejsz pojemność.
+		}
 		DataType* ResizedArray = new DataType[m_Capacity]; // Utworzenie tablicy pomocniczej.
 		for (unsigned int i = 0; i < DataStructure<DataType>::m_Size - 1; i++)
 		{
 			ResizedArray[i] = m_Elements[i + 1];
 		}
-		m_Elements = ResizedArray;	// Zastąpienie starej tablicy nową tablicą bez elementu na początku.
-		--DataStructure<DataType>::m_Size;
-
-		if (DataStructure<DataType>::m_Size <= m_Capacity / 2) // Jeśli tablica jest w połowie pusta.
-		{
-			HalveTheCapacity(); // Dwukrotnie zmniejsz pojemność.
-		}
+		m_Elements = ResizedArray;
 	}
 }
 
@@ -124,18 +126,12 @@ void ArrayList<DataType>::PopBack()
 {
 	if (!ArrayList<DataType>::IsEmpty())
 	{
-		DataType* ResizedArray = new DataType[m_Capacity]; // Utworzenie tablicy pomocniczej.
-		for (unsigned int i = 0; i < DataStructure<DataType>::m_Size - 1; i++)
-		{
-			ResizedArray[i] = m_Elements[i];
-		}
-		m_Elements = ResizedArray;	// Zastąpienie starej tablicy nową tablicą bez elementu na końcu.
-		--DataStructure<DataType>::m_Size;
-
 		if (DataStructure<DataType>::m_Size <= m_Capacity / 2) // Jeśli tablica jest w połowie pusta.
 		{
 			HalveTheCapacity(); // Dwukrotnie zmniejsz pojemność.
 		}
+		m_Elements[DataStructure<DataType>::m_Size - 1] = NULL; // Ostatni element tablicy jest nullem
+		--DataStructure<DataType>::m_Size; // Dekrementacja rozmiaru
 	}
 }
 
@@ -184,6 +180,18 @@ unsigned int ArrayList<DataType>::SearchForElementForward(DataType Element)
 	}
 
 	return NumOfInstances; // Zwraca liczbę wystąpień elementu w strukturze
+}
+
+template<typename DataType>
+void ArrayList<DataType>::PrintData() const
+{
+	if (!DataStructure<DataType>::IsEmpty())
+	{
+		for (unsigned int i = 0; i < DataStructure<DataType>::GetSize(); i++)
+		{
+			std::cout << m_Elements[i] << std::endl;
+		}
+	}
 }
 
 template<typename DataType>
