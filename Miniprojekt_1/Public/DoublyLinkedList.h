@@ -67,7 +67,7 @@ public:
 	unsigned int SearchForElementBackward(DataType Element);
 
 	// Tworzy kopie struktury (stosowane w badaniach)
-	virtual DataStructure<DataType>* Clone() const override { return new DoublyLinkedList<DataType>(); };
+	virtual DataStructure<DataType>* Clone() const override { return new DoublyLinkedList<DataType>(*this); };
 
 	// Zwraca "głowę" listy.
 	DoublyLinkedList_Node<DataType>* GetHeadNode() const { return m_HeadNode; }

@@ -34,7 +34,7 @@ public:
 	virtual unsigned int SearchForElementForward(DataType Element) override;
 
 	// Tworzy kopie struktury (stosowane w badaniach)
-	virtual DataStructure<DataType>* Clone() const override { return new ArrayList<DataType>(m_Capacity); }
+	virtual DataStructure<DataType>* Clone() const override { return new ArrayList<DataType>(*this); }
 
 	// Zwraca maksymalną pojemność tablicy.
 	unsigned int GetCapacity() const { return m_Capacity; }
@@ -162,16 +162,11 @@ void ArrayList<DataType>::RemoveAt(unsigned int Index)
 {
 	if (!ArrayList<DataType>::IsEmpty() && Index < DataStructure<DataType>::m_Size)
 	{
-		for (unsigned int i = Index; i < DataStructure<DataType>::m_Size; i++)
+		for (unsigned int i = Index; i < DataStructure<DataType>::m_Size - 1; i++)
 		{
 			m_Elements[i] = m_Elements[i + 1]; // Przesunięcie elementów o indeksie większym lub równym od podanego w lewo.
 		}
-		--DataStructure<DataType>::m_Size;
-
-		if (DataStructure<DataType>::m_Size <= m_Capacity / 2) // Jeśli tablica jest w połowie pusta.
-		{
-			HalveTheCapacity(); // Dwukrotnie zmniejsz pojemność.
-		}
+		PopBack(); // Usunięcie ostatniego zdublowanego elementu
 	}
 }
 
