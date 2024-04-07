@@ -57,7 +57,7 @@ public:
     virtual unsigned int SearchForElementForward(DataType Element) override;
 
     // Tworzy kopie struktury (stosowane w badaniach)
-    virtual DataStructure<DataType>* Clone() const override { return new SinglyLinkedList<DataType>(); }
+    virtual DataStructure<DataType>* Clone() const override { return new SinglyLinkedList<DataType>(*this); }
 
 private:
     SinglyLinkedList_Node<DataType>* m_HeadNode;       // Pierwszy element listy.
