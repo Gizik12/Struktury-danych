@@ -32,6 +32,9 @@ public:
 	// Tworzy kopie struktury (stosowane w badaniach)
 	virtual DataStructure<DataType>* Clone() const = 0;
 
+	// Wypisuje elementy
+	virtual void PrintData() const = 0;
+
 	unsigned int GetSize() const { return m_Size; }
 	
 	bool IsEmpty() const { return m_Size ? false : true; }
