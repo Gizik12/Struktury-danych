@@ -15,6 +15,10 @@ static long long MeasureTime(const chrono::steady_clock::time_point Start, const
 	auto Duration = chrono::duration_cast<chrono::microseconds>(End - Start);
 	return Duration.count();
 }
+static chrono::steady_clock::time_point ConvertToSteadyClock(const chrono::system_clock::time_point& time)
+{
+	return chrono::steady_clock::now() + chrono::duration_cast<chrono::steady_clock::duration>(time - chrono::system_clock::now());
+}
 
 int main()
 {
@@ -153,9 +157,9 @@ int main()
 				cout << "Pomiar przeprowadzono dla: " << PickedDataStructure->GetSize() << " elementów\n";
 
 				// Prowadzenie badań
-				OperationStart = chrono::high_resolution_clock::now();
+				OperationStart = ConvertToSteadyClock(chrono::high_resolution_clock::now());
 				PickedDataStructure->PushFront(Element);
-				OperationEnd = chrono::high_resolution_clock::now();
+				OperationEnd = ConvertToSteadyClock(chrono::high_resolution_clock::now());
 				cout << "Czas wykonywania: " << MeasureTime(OperationStart, OperationEnd) << " mikrosekund\n";
 				system("pause");
 				continue;
@@ -191,9 +195,9 @@ int main()
 				cout << "Pomiar przeprowadzono dla: " << PickedDataStructure->GetSize() << " elementów\n";
 
 				// Prowadzenie badań
-				OperationStart = chrono::high_resolution_clock::now();
+				OperationStart = ConvertToSteadyClock(chrono::high_resolution_clock::now());
 				PickedDataStructure->PushBack(Element);
-				OperationEnd = chrono::high_resolution_clock::now();
+				OperationEnd = ConvertToSteadyClock(chrono::high_resolution_clock::now());
 				cout << "Czas wykonywania: " << MeasureTime(OperationStart, OperationEnd) << " mikrosekund\n";
 				system("pause");
 				continue;
@@ -230,14 +234,14 @@ int main()
 					else
 					{
 						// Prowadzenie badań
-						OperationStart = chrono::high_resolution_clock::now();
+						OperationStart = ConvertToSteadyClock(chrono::high_resolution_clock::now());
 						PickedDataStructure->PushFront(Element);
-						OperationEnd = chrono::high_resolution_clock::now();
+						OperationEnd = ConvertToSteadyClock(chrono::high_resolution_clock::now());
 					}
 					break;
 
 				case '2':
-					Element = GenerateRandomNumber();
+					Element = GenerateRandomNumber(-2147483647, 2147483647);
 					Index = GenerateRandomNumber(0, PickedDataStructure->GetSize() - 1);
 					break;
 				}
@@ -245,16 +249,16 @@ int main()
 				if (Index < PickedDataStructure->GetSize())
 				{
 					// Prowadzenie badań
-					OperationStart = chrono::high_resolution_clock::now();
+					OperationStart = ConvertToSteadyClock(chrono::high_resolution_clock::now());
 					PickedDataStructure->Insert(Element, Index);
-					OperationEnd = chrono::high_resolution_clock::now();
+					OperationEnd = ConvertToSteadyClock(chrono::high_resolution_clock::now());
 				}
 				else
 				{
 					// Prowadzenie badań
-					OperationStart = chrono::high_resolution_clock::now();
+					OperationStart = ConvertToSteadyClock(chrono::high_resolution_clock::now());
 					PickedDataStructure->PushBack(Element);
-					OperationEnd = chrono::high_resolution_clock::now();
+					OperationEnd = ConvertToSteadyClock(chrono::high_resolution_clock::now());
 				}
 
 				system("cls");
@@ -276,9 +280,9 @@ int main()
 					system("cls");
 					cout << "Pomiar dokonano dla: " << PickedDataStructure->GetSize() << " elementów\n";
 
-					OperationStart = chrono::high_resolution_clock::now();
+					OperationStart = ConvertToSteadyClock(chrono::high_resolution_clock::now());
 					PickedDataStructure->PopFront();
-					OperationEnd = chrono::high_resolution_clock::now();
+					OperationEnd = ConvertToSteadyClock(chrono::high_resolution_clock::now());
 
 					cout << "Czas wykonywania: " << MeasureTime(OperationStart, OperationEnd) << " mikrosekund\n";
 					system("pause");
@@ -297,9 +301,9 @@ int main()
 					cout << "Pomiar dokonano dla " << PickedDataStructure->GetSize() << " elementów\n";
 
 					// Prowadzenie badań
-					OperationStart = chrono::high_resolution_clock::now();
+					OperationStart = ConvertToSteadyClock(chrono::high_resolution_clock::now());
 					PickedDataStructure->PopBack();
-					OperationEnd = chrono::high_resolution_clock::now();
+					OperationEnd = ConvertToSteadyClock(chrono::high_resolution_clock::now());
 
 					cout << "Czas wykonywania: " << MeasureTime(OperationStart, OperationEnd) << " mikrosekund\n";
 					system("pause");
@@ -341,9 +345,9 @@ int main()
 				unsigned int NumOfElements = PickedDataStructure->GetSize();
 
 				// Prowadzenie badań
-				OperationStart = chrono::high_resolution_clock::now();
+				OperationStart = ConvertToSteadyClock(chrono::high_resolution_clock::now());
 				PickedDataStructure->RemoveAt(Index);
-				OperationEnd = chrono::high_resolution_clock::now();
+				OperationEnd = ConvertToSteadyClock(chrono::high_resolution_clock::now());
 
 				system("cls");
 				cout << "Pomiar dokonano dla " << NumOfElements << " elementów\n";
@@ -395,18 +399,18 @@ int main()
 					case '1':
 					{
 						// Prowadzenie badań
-						OperationStart = chrono::high_resolution_clock::now();
+						OperationStart = ConvertToSteadyClock(chrono::high_resolution_clock::now());
 						NumOfInstances = DLL->SearchForElementForward(Element);
-						OperationEnd = chrono::high_resolution_clock::now();
+						OperationEnd = ConvertToSteadyClock(chrono::high_resolution_clock::now());
 						break;
 					}
 
 					case '2':
 					{
 						// Prowadzenie badań
-						OperationStart = chrono::high_resolution_clock::now();
+						OperationStart = ConvertToSteadyClock(chrono::high_resolution_clock::now());
 						NumOfInstances = DLL->SearchForElementBackward(Element);
-						OperationEnd = chrono::high_resolution_clock::now();
+						OperationEnd = ConvertToSteadyClock(chrono::high_resolution_clock::now());
 						break;
 					}
 					}
@@ -417,9 +421,9 @@ int main()
 					cout << "Szukam \"" << Element << "\" w strukturze...\n";
 
 					// Prowadzenie badań
-					OperationStart = chrono::high_resolution_clock::now();
+					OperationStart = ConvertToSteadyClock(chrono::high_resolution_clock::now());
 					NumOfInstances = PickedDataStructure->SearchForElementForward(Element);
-					OperationEnd = chrono::high_resolution_clock::now();
+					OperationEnd = ConvertToSteadyClock(chrono::high_resolution_clock::now());
 				}
 				system("cls");
 				cout << "Znaleziono " << NumOfInstances << " wystąpienie/wystąpień \"" << Element << "\" w strukturze\n";
