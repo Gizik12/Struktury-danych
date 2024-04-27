@@ -1,4 +1,4 @@
-#include "../Public/DataGenerator.h"
+#include "DataGenerator.h"
 #include <random>
 
 int GenerateRandomNumber(int min, int max)

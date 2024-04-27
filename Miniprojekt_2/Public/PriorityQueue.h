@@ -1,11 +1,11 @@
-#ifndef DATA_STRUCTURE_H
-#define DATA_STRUCTURE_H
+#ifndef PRIORITY_QUEUE_H
+#define PRIORITY_QUEUE_H
 
-class DataStructure // Deklaracja klasy abstrakcyjnej DataStructure.
+class PriorityQueue // Deklaracja klasy abstrakcyjnej PriorityQueue.
 {
 public:
     // Wstawienie elementu o priorytecie.
-    virtual void insert(int e, int p) = 0;
+    virtual void insert(int element, int priority) = 0;
 
     // Usunięcie i zwrócenie elementu o najwyższym priorytecie.
     virtual int extractMax() = 0;
@@ -14,10 +14,10 @@ public:
     virtual int peek() = 0;
 
     // Modyfikacja priorytetu danego elementu.
-    virtual void modifyKey(int e, int p) = 0;
+    virtual void modifyKey(int element, int priority) = 0;
 
     // Metoda zwracająca rozmiar struktury danych.
-    virtual int returnSize();
+    virtual int returnSize() = 0;
 };
 
 #endif
