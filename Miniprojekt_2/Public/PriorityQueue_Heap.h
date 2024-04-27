@@ -34,7 +34,7 @@ public:
 
     virtual int peek() override; // Metoda do wyświetlania elementu o najwyższym priorytecie.
 
-    virtual void modifyKey(int element, int newPriority) override; // Metoda do modyfikowania priorytetu elementu.
+    virtual void modifyKey(int element, int priority) override; // Metoda do modyfikowania priorytetu elementu.
 
     virtual int returnSize() override; // Metoda zwracająca aktualny rozmiar kolejki.
 };

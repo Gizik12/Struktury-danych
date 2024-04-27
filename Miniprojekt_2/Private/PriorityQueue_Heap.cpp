@@ -99,15 +99,15 @@ int PriorityQueue_Heap::peek()
     return queue[0].element; // Zwracamy element o najwyższym priorytecie.
 }
 
-void PriorityQueue_Heap::modifyKey(int element, int newPriority)
+void PriorityQueue_Heap::modifyKey(int element, int priority)
 {
     for (int i = 0; i < size; ++i) // Przeszukujemy kolejkę w poszukiwaniu elementu.
     {
         if (queue[i].element == element)            // Jeśli znaleźliśmy element.
         {
             int oldPriority = queue[i].priority;    // Zapamiętujemy stary priorytet.
-            queue[i].priority = newPriority;        // Nadajemy nowy priorytet.
-            if (newPriority > oldPriority)          // Jeśli nowy priorytet jest większy od starego.
+            queue[i].priority = priority;        // Nadajemy nowy priorytet.
+            if (priority > oldPriority)          // Jeśli nowy priorytet jest większy od starego.
             {
                 shiftUp(i); // Przesuwamy element w górę.
             }

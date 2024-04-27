@@ -12,7 +12,7 @@ struct PriorityQueue_LinkedList_Node
 };
 
 // Klasa kolejki priorytetowej zaimplementowanej jako lista wiązana (jednokierunkowa).
-class PriorityQueue_LinkedList : PriorityQueue
+class PriorityQueue_LinkedList : public PriorityQueue
 {
 public:
 	// Konstruktor.
