@@ -4,9 +4,8 @@
 #ifndef PRIORITY_QUEUE_HEAP_H
 #define PRIORITY_QUEUE_HEAP_H
 
-class PriorityQueue_Heap_Node // Deklaracja klasy Node.
+struct PriorityQueue_Heap_Node // Deklaracja klasy Node.
 {
-public:
     int priority; // Priorytet węzła.
     int element; // Element węzła.
 };
