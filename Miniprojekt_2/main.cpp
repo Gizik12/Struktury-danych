@@ -119,12 +119,14 @@ int main()
 			switch (priorityQueue_opt)
 			{
 			case '1':
+				e = GenerateRandomNumber(-2147483647, 2147483647);
+				p =	GenerateRandomNumber(0, maxPriority);
 				for (int i = 0; i < 100; i++)
 				{
 					OperationStart = chrono::steady_clock::now();
 					for (int i = 0; i < dataAmt; i++)
 					{
-						priorityQueue->insert(GenerateRandomNumber(-2147483647, 2147483647), GenerateRandomNumber(0, maxPriority));
+						priorityQueue->insert(e, p);
 					}
 					OperationEnd = chrono::steady_clock::now();
 					auto duration = std::chrono::duration_cast<std::chrono::nanoseconds>(OperationEnd - OperationStart).count();
@@ -140,7 +142,7 @@ int main()
 				}
 				for(int i = 0; i < 100; i++)
 				{
-					priorityQueueH = priorityQueue;
+					*priorityQueueH = *priorityQueue;
 					OperationStart = chrono::steady_clock::now();
 					priorityQueueH->extractMax();
 					OperationEnd = chrono::steady_clock::now();
@@ -157,7 +159,7 @@ int main()
 				}
 				for(int i = 0; i < 100; i++)
 				{
-					priorityQueueH = priorityQueue;
+					*priorityQueueH = *priorityQueue;
 					OperationStart = chrono::steady_clock::now();
 					priorityQueueH->peek();
 					OperationEnd = chrono::steady_clock::now();
