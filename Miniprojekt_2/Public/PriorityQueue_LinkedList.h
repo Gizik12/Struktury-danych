@@ -6,7 +6,7 @@
 // Struktura węzła
 struct PriorityQueue_LinkedList_Node
 {
-	int element = 0;											// Wartość elementu.
+	int element = 0;										// Wartość elementu.
 	int priority = 0;										// Prioritet elementu.
 	PriorityQueue_LinkedList_Node* nextNode = nullptr;	    // Wskaźnik na następny element.
 };
@@ -37,10 +37,7 @@ public:
     virtual int returnSize() override;
 
 private:
-    // Zwraca `true` jeśli kolejka jest pusta, w innym wypadku `false`.
-    bool isEmpty() const { return (size <= 0) ? true : false; }
-
-    PriorityQueue_LinkedList_Node* headNode;    // Wskaźnik na początek kolejki.
+	PriorityQueue_LinkedList_Node* headNode;    // Wskaźnik na początek kolejki.
     int size;                                   // Liczba elementów w kolejce.
 };
 
