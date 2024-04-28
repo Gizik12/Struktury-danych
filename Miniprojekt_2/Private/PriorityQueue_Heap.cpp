@@ -79,24 +79,22 @@ void PriorityQueue_Heap::insert(int element, int priority)
 
 int PriorityQueue_Heap::extractMax()
 {
-    if (size == 0) // Jeśli kolejka jest pusta, rzucamy wyjątek.
+    if (size > 0) // Jeśli kolejka nie jest pusta.
     {
-        throw std::out_of_range("Queue is empty");
+        int maxElement = queue[0].element;  // Zapisanie elementu o najwyższym priorytecie.
+        queue[0] = queue[size - 1];         // Zastąpienie korzenia ostatnim elementem kolejki.
+        --size;                             // Dekrementacja rozmiaru kolejki.
+        shiftDown(0);                        // Przesunięcie nowego korzenia w dół kolejki.
+        return maxElement;                  // Zwrócenie elementu o najwyższym priorytecie.
     }
-    int maxElement = queue[0].element;  // Zapisanie elementu o najwyższym priorytecie.
-    queue[0] = queue[size - 1];         // Zastąpienie korzenia ostatnim elementem kolejki.
-    --size;                             // Dekrementacja rozmiaru kolejki.
-    shiftDown(0);                        // Przesunięcie nowego korzenia w dół kolejki.
-    return maxElement;                  // Zwrócenie elementu o najwyższym priorytecie.
 }
 
 int PriorityQueue_Heap::peek()
 {
-    if (size == 0) // Jeśli kolejka jest pusta, rzucamy wyjątek.
+    if (size > 0) // Jeśli kolejka nie jest pusta.
     {
-        throw std::out_of_range("Queue is empty");
+        return queue[0].element; // Zwracamy element o najwyższym priorytecie.
     }
-    return queue[0].element; // Zwracamy element o najwyższym priorytecie.
 }
 
 void PriorityQueue_Heap::modifyKey(int element, int priority)
@@ -118,7 +116,6 @@ void PriorityQueue_Heap::modifyKey(int element, int priority)
             return; // Kończymy działanie metody.
         }
     }
-    throw std::invalid_argument("Element not found"); // Jeśli element nie został znaleziony, rzucamy wyjątek.
 }
 
 int PriorityQueue_Heap::returnSize()

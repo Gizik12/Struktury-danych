@@ -123,6 +123,7 @@ int main()
 				break;
 
 			case '2':
+				cout << "Generowanie losowej kolejki...\n";
 				for (int i = 0; i < dataAmt; i++)
 				{
 					priorityQueue->insert(GenerateRandomNumber(), GenerateRandomNumber(0, maxPriority));
@@ -136,6 +137,7 @@ int main()
 				break;
 
 			case '3':
+				cout << "Generowanie losowej kolejki...\n";
 				for (int i = 0; i < dataAmt; i++)
 				{
 					priorityQueue->insert(GenerateRandomNumber(), GenerateRandomNumber(0, maxPriority));
@@ -149,6 +151,7 @@ int main()
 				break;
 
 			case '4':
+				cout << "Generowanie losowej kolejki...\n";
 				for (int i = 0; i < dataAmt; i++)
 				{
 					priorityQueue->insert(GenerateRandomNumber(), GenerateRandomNumber(0, maxPriority));
@@ -162,6 +165,7 @@ int main()
 				break;
 
 			case '5':
+				cout << "Generowanie losowej kolejki...\n";
 				for (int i = 0; i < dataAmt; i++)
 				{
 					priorityQueue->insert(GenerateRandomNumber(), GenerateRandomNumber(0, maxPriority));
