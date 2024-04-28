@@ -12,11 +12,14 @@ int main()
 	setlocale(LC_ALL, "pl_PL"); // Ustawienie języka polskiego.
 
 	PriorityQueue* priorityQueue;			// Wskaźnik na wybrany typ kolejki.
+	PriorityQueue* priorityQueueH;			// Wskaźnik na wybrany typ kolejki pomocniczy.
 	char priorityQueue_type;				// Wybrany typ kolejki.
 	char priorityQueue_opt;					// Wybrana operacja kolejki.
 	char dataAmt_type;						// Wybrana ilość danych.
 	int dataAmt;							// Ilość danych do prowadzonego badania.
 	short priorityMultiplier = 5;			// Mnożnik maksymalnej wartości wygenerowanego priorytetu (krotność ilości danych).
+	double totalDuration = 0.0;
+	int e,p = 0;
 
 	chrono::steady_clock::time_point OperationStart;	// Czas rozpoczęcia operacji.
 	chrono::steady_clock::time_point OperationEnd;		// Czas zakończenia operacji.
@@ -36,10 +39,12 @@ int main()
 		{
 		case '1':
 			priorityQueue = new PriorityQueue_Heap;
+			priorityQueueH = new PriorityQueue_Heap;
 			break;
 
 		case '2':
 			priorityQueue = new PriorityQueue_LinkedList;
+			priorityQueueH = new PriorityQueue_Heap;
 			break;
 
 		case 'q':
@@ -114,68 +119,85 @@ int main()
 			switch (priorityQueue_opt)
 			{
 			case '1':
-				OperationStart = chrono::steady_clock::now();
-				for (int i = 0; i < dataAmt; i++)
+				for (int i = 0; i < 100; i++)
 				{
-					priorityQueue->insert(GenerateRandomNumber(), GenerateRandomNumber(0, maxPriority));
+					OperationStart = chrono::steady_clock::now();
+					for (int i = 0; i < dataAmt; i++)
+					{
+						priorityQueue->insert(GenerateRandomNumber(-2147483647, 2147483647), GenerateRandomNumber(0, maxPriority));
+					}
+					OperationEnd = chrono::steady_clock::now();
+					auto duration = std::chrono::duration_cast<std::chrono::nanoseconds>(OperationEnd - OperationStart).count();
+    				totalDuration += duration;
 				}
-				OperationEnd = chrono::steady_clock::now();
 				break;
 
 			case '2':
 				cout << "Generowanie losowej kolejki...\n";
 				for (int i = 0; i < dataAmt; i++)
 				{
-					priorityQueue->insert(GenerateRandomNumber(), GenerateRandomNumber(0, maxPriority));
+					priorityQueue->insert(GenerateRandomNumber(-2147483647, 2147483647), GenerateRandomNumber(0, maxPriority));
 				}
-				OperationStart = chrono::steady_clock::now();
-				for (int i = 0; i < dataAmt; i++)
+				for(int i = 0; i < 100; i++)
 				{
-					priorityQueue->extractMax();
+					priorityQueueH = priorityQueue;
+					OperationStart = chrono::steady_clock::now();
+					priorityQueueH->extractMax();
+					OperationEnd = chrono::steady_clock::now();
+					auto duration = std::chrono::duration_cast<std::chrono::nanoseconds>(OperationEnd - OperationStart).count();
+    				totalDuration += duration;
 				}
-				OperationEnd = chrono::steady_clock::now();
 				break;
 
 			case '3':
 				cout << "Generowanie losowej kolejki...\n";
 				for (int i = 0; i < dataAmt; i++)
 				{
-					priorityQueue->insert(GenerateRandomNumber(), GenerateRandomNumber(0, maxPriority));
+					priorityQueue->insert(GenerateRandomNumber(-2147483647, 2147483647), GenerateRandomNumber(0, maxPriority));
 				}
-				OperationStart = chrono::steady_clock::now();
-				for (int i = 0; i < dataAmt; i++)
+				for(int i = 0; i < 100; i++)
 				{
-					priorityQueue->peek();
+					priorityQueueH = priorityQueue;
+					OperationStart = chrono::steady_clock::now();
+					priorityQueueH->peek();
+					OperationEnd = chrono::steady_clock::now();
+					auto duration = std::chrono::duration_cast<std::chrono::nanoseconds>(OperationEnd - OperationStart).count();
+    				totalDuration += duration;
 				}
-				OperationEnd = chrono::steady_clock::now();
 				break;
 
 			case '4':
 				cout << "Generowanie losowej kolejki...\n";
 				for (int i = 0; i < dataAmt; i++)
 				{
-					priorityQueue->insert(GenerateRandomNumber(), GenerateRandomNumber(0, maxPriority));
+					priorityQueue->insert(GenerateRandomNumber(-2147483647, 2147483647), GenerateRandomNumber(0, maxPriority));
 				}
-				OperationStart = chrono::steady_clock::now();
-				for (int i = 0; i < dataAmt; i++)
+				e = GenerateRandomNumber(-2147483647, 2147483647);
+				p =	GenerateRandomNumber(0, maxPriority);
+				for (int i = 0; i < 100; i++)
 				{
-					priorityQueue->modifyKey(GenerateRandomNumber(), GenerateRandomNumber(0, maxPriority));
+					OperationStart = chrono::steady_clock::now();
+					priorityQueue->modifyKey(e, p);
+					OperationEnd = chrono::steady_clock::now();
+					auto duration = std::chrono::duration_cast<std::chrono::nanoseconds>(OperationEnd - OperationStart).count();
+    				totalDuration += duration;
 				}
-				OperationEnd = chrono::steady_clock::now();
 				break;
 
 			case '5':
 				cout << "Generowanie losowej kolejki...\n";
 				for (int i = 0; i < dataAmt; i++)
 				{
-					priorityQueue->insert(GenerateRandomNumber(), GenerateRandomNumber(0, maxPriority));
+					priorityQueue->insert(GenerateRandomNumber(-2147483647, 2147483647), GenerateRandomNumber(0, maxPriority));
 				}
-				OperationStart = chrono::steady_clock::now();
-				for (int i = 0; i < dataAmt; i++)
+				for (int i = 0; i < 100; i++)
 				{
+					OperationStart = chrono::steady_clock::now();
 					priorityQueue->returnSize();
+					OperationEnd = chrono::steady_clock::now();
+					auto duration = std::chrono::duration_cast<std::chrono::nanoseconds>(OperationEnd - OperationStart).count();
+    				totalDuration += duration;
 				}
-				OperationEnd = chrono::steady_clock::now();
 				break;
 
 			default:
@@ -183,8 +205,9 @@ int main()
 				return 1;
 			}
 			delete priorityQueue;
-			TotalOperationTime = chrono::duration_cast<chrono::nanoseconds>(OperationEnd - OperationStart);
-			cout << "Całkowity czas wykonywania operacji: " << TotalOperationTime.count() << " ns\n";
+			delete priorityQueueH;
+			double average = totalDuration / static_cast<double>(100);
+			cout << "Średni całkowity czas wykonywania operacji z 100 prób: " << average << " ns\n";
 			system("pause");
 			break;
 		}
