@@ -6,7 +6,7 @@
 // Struktura węzła
 struct PriorityQueue_LinkedList_Node
 {
-	int data = 0;											// Wartość elementu.
+	int element = 0;											// Wartość elementu.
 	int priority = 0;										// Prioritet elementu.
 	PriorityQueue_LinkedList_Node* nextNode = nullptr;	    // Wskaźnik na następny element.
 };
