@@ -16,13 +16,15 @@ PriorityQueue_Heap::~PriorityQueue_Heap()
 void PriorityQueue_Heap::resize(int newCapacity)
 {
     PriorityQueue_Heap_Node* newQueue = new PriorityQueue_Heap_Node[newCapacity]; // Tworzenie nowej kolejki o nowej pojemności.
-    for (int i = 0; i < size; ++i)          // Kopiowanie elementów ze starej kolejki do nowej.
+    int elementsToCopy = std::min(size, newCapacity); // Określenie liczby elementów do skopiowania
+    for (int i = 0; i < elementsToCopy; ++i)          // Kopiowanie elementów ze starej kolejki do nowej.
     {
         newQueue[i] = queue[i];
     }
-    delete[] queue;                         // Zwolnienie pamięci zajmowanej przez starą kolejkę.
-    queue = newQueue;                       // Przypisanie nowej kolejki do wskaźnika.
-    capacity = newCapacity;                 // Aktualizacja pojemności.
+    delete[] this->queue;                         // Zwolnienie pamięci zajmowanej przez starą kolejkę.
+    this->queue = newQueue;                       // Przypisanie nowej kolejki do wskaźnika.
+    this->capacity = newCapacity;                 // Aktualizacja pojemności.
+    this->size = elementsToCopy;                 // Aktualizacja rozmiaru kolejki.
 }
 
 void PriorityQueue_Heap::shiftUp(int index)
@@ -96,7 +98,6 @@ int PriorityQueue_Heap::peek()
         return queue[0].element; // Zwracamy element o najwyższym priorytecie.
     }
 }
-
 void PriorityQueue_Heap::modifyKey(int element, int priority)
 {
     for (int i = 0; i < size; ++i) // Przeszukujemy kolejkę w poszukiwaniu elementu.

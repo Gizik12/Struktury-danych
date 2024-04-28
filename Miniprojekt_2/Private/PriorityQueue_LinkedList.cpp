@@ -19,7 +19,7 @@ PriorityQueue_LinkedList::~PriorityQueue_LinkedList()
 void PriorityQueue_LinkedList::insert(int element, int priority)
 {
     PriorityQueue_LinkedList_Node* newNode = new PriorityQueue_LinkedList_Node; // Nowy węzeł.
-    newNode->element = element;                                                    // Ustawienie wartości newNode.
+    newNode->element = element;                                                 // Ustawienie wartości newNode.
     newNode->priority = priority;                                               // Ustawienie priorytetu newNode.
 
     if (size <= 0)
