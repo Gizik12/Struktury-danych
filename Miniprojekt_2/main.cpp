@@ -3,7 +3,7 @@
 
 #include "Public/PriorityQueue_Heap.h"
 #include "Public/PriorityQueue_LinkedList.h"
-#include "../DataGenerator/DataGenerator.h"
+#include "DataGenerator/DataGenerator.h"
 
 using namespace std;
 
@@ -18,7 +18,7 @@ int main()
 	char dataAmt_type;						// Wybrana ilość danych.
 	int dataAmt;							// Ilość danych do prowadzonego badania.
 	short priorityMultiplier = 5;			// Mnożnik maksymalnej wartości wygenerowanego priorytetu (krotność ilości danych).
-	double totalDuration = 0.0;
+	double totalDuration;
 	int e,p = 0;
 
 	chrono::steady_clock::time_point OperationStart;	// Czas rozpoczęcia operacji.
@@ -44,7 +44,6 @@ int main()
 
 		case '2':
 			priorityQueue = new PriorityQueue_LinkedList;
-			priorityQueueH = new PriorityQueue_Heap;
 			break;
 
 		case 'q':
@@ -116,6 +115,7 @@ int main()
 			}
 
 			int maxPriority = dataAmt * priorityMultiplier;
+			totalDuration = 0.0;
 			switch (priorityQueue_opt)
 			{
 			case '1':

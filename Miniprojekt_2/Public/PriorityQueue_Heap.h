@@ -19,9 +19,9 @@ private:
 
     void resize(int newCapacity); // Metoda do zmiany rozmiaru kolejki.
 
-    void shiftUp(int index); // Metoda do przesuwania w górę węzła.
+    void siftUp(int index); // Metoda do przesuwania w górę węzła.
 
-    void shiftDown(int index); // Metoda do przesuwania w dół węzła.
+    void siftDown(int index); // Metoda do przesuwania w dół węzła.
 
 public:
     PriorityQueue_Heap(); // Konstruktor.
