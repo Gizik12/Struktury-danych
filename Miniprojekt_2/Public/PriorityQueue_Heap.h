@@ -1,42 +1,44 @@
 #include "PriorityQueue.h"
 #include <iostream>
+using namespace std;
 
 #ifndef PRIORITY_QUEUE_HEAP_H
 #define PRIORITY_QUEUE_HEAP_H
 
-struct PriorityQueue_Heap_Node // Deklaracja klasy Node.
-{
-    int priority; // Priorytet węzła.
-    int element; // Element węzła.
-};
-
-class PriorityQueue_Heap : public PriorityQueue // Deklaracja klasy MaxPriorityQueue dziedziczącej po PriorityQueue.
+class PriorityQueue_Heap : public PriorityQueue
 {
 private:
-    PriorityQueue_Heap_Node* queue; // Kolejka węzłów.
-    int capacity; // Pojemność kolejki.
-    int size; // Rozmiar kolejki.
+    struct PriorityQueue_Heap_Node {
+        int Element;
+        int Priority;
+    };
 
-    void resize(int newCapacity); // Metoda do zmiany rozmiaru kolejki.
+    PriorityQueue_Heap_Node *Queue;
+    int Capacity;
+    int Size;
 
-    void siftUp(int index); // Metoda do przesuwania w górę węzła.
+    inline int ParentIndex(int Index) const;
+    inline int LeftChildIndex(int Index) const;
+    inline int RightChildIndex(int Index) const;
 
-    void siftDown(int index); // Metoda do przesuwania w dół węzła.
+    void HeapifyUp(int Index);
+
+    void HeapifyDown(int Index);
 
 public:
-    PriorityQueue_Heap(); // Konstruktor.
+ 
+    PriorityQueue_Heap();
 
-    ~PriorityQueue_Heap(); // Destruktor.
+    ~PriorityQueue_Heap();
 
-    virtual void insert(int element, int priority) override; // Metoda do wstawiania elementu do kolejki.
+    void Swap(PriorityQueue_Heap_Node& FirstNode, PriorityQueue_Heap_Node& SecondNode);
 
-    virtual int extractMax() override; // Metoda do usuwania i zwracania elementu o najwyższym priorytecie.
+    void modifyKey(int Element, int Priority);
+    
+    int peek();
 
-    virtual int peek() override; // Metoda do wyświetlania elementu o najwyższym priorytecie.
-
-    virtual void modifyKey(int element, int priority) override; // Metoda do modyfikowania priorytetu elementu.
-
-    virtual int returnSize() override; // Metoda zwracająca aktualny rozmiar kolejki.
+    void insert(int Element, int Priority);
+    int extractMax();
+    int returnSize();
 };
-
 #endif

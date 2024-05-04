@@ -1,126 +1,124 @@
 #include "../Public/PriorityQueue_Heap.h"
-#include <iostream>
+
 #include <cmath>
 
 PriorityQueue_Heap::PriorityQueue_Heap()
 {
-    this->queue = nullptr;  // Inicjalizacja wskaźnika na nullptr.
-    this->capacity = 0;     // Inicjalizacja pojemności kolejki na 0.
-    this->size = 0;         // Inicjalizacja rozmiaru kolejki na 0.
+    Queue = nullptr;
+    Capacity = 0;
+    Size = 0;
 }
 
 PriorityQueue_Heap::~PriorityQueue_Heap()
 {
-    delete[] this->queue;   // Zwolnienie pamięci zaalokowanej na kolejkę.
+    delete[] Queue;
 }
 
-void PriorityQueue_Heap::resize(int newCapacity)
+void PriorityQueue_Heap::insert(int Element, int Priority)
 {
-    PriorityQueue_Heap_Node* newQueue = new PriorityQueue_Heap_Node[newCapacity]; // Tworzenie nowej kolejki o nowej pojemności.
-    int elementsToCopy = std::min(size, newCapacity); // Określenie liczby elementów do skopiowania
-    for (int i = 0; i < elementsToCopy; ++i)          // Kopiowanie elementów ze starej kolejki do nowej.
+    if (Size >= Capacity)
     {
-        newQueue[i] = queue[i];
-    }
-    delete[] this->queue;                         // Zwolnienie pamięci zajmowanej przez starą kolejkę.
-    this->queue = newQueue;                       // Przypisanie nowej kolejki do wskaźnika.
-    this->capacity = newCapacity;                 // Aktualizacja pojemności.
-    this->size = elementsToCopy;                 // Aktualizacja rozmiaru kolejki.
-}
-
-void PriorityQueue_Heap::siftUp(int index)
-{
-    while (index > 0)   // Dopóki nie dotrzemy do korzenia.
-    {
-        int parentIndex = std::floor((index - 1) / 2);                         // Obliczenie indeksu rodzica.
-        if (queue[index].priority > queue[parentIndex].priority)   // Jeśli priorytet bieżącego elementu jest większy niż rodzica.
+        Capacity = (Capacity == 0) ? 1 : 2 * Capacity;
+        PriorityQueue_Heap_Node* NewQueue = new PriorityQueue_Heap_Node[Capacity];
+        for (int i = 0; i < Size; i++)
         {
-            std::swap(queue[index], queue[parentIndex]);           // Zamiana miejscami bieżącego elementu z rodzicem.
-            index = parentIndex;                                   // Aktualizacja indeksu bieżącego elementu.
+            NewQueue[i] = Queue[i];
         }
-        else // Jeśli priorytet bieżącego elementu jest mniejszy lub równy priorytetowi rodzica.
-        {
-            break; // Przerwanie pętli.
-        }
+        delete Queue;
+        Queue = NewQueue;
     }
-}
-
-void PriorityQueue_Heap::siftDown(int index)
-{
-    int maxIndex = index;                   // Ustalenie maksymalnego indeksu na indeks bieżącego elementu.
-    int leftChildIndex = 2 * index + 1;     // Obliczenie indeksu lewego dziecka.
-    int rightChildIndex = 2 * index + 2;    // Obliczenie indeksu prawego dziecka.
-
-    if (leftChildIndex < size && queue[leftChildIndex].priority > queue[maxIndex].priority) // Jeśli lewe dziecko istnieje i ma większy priorytet niż bieżący element.
-    {
-        maxIndex = leftChildIndex; // Zaktualizowanie maksymalnego indeksu.
-    }
-
-    if (rightChildIndex < size && queue[rightChildIndex].priority > queue[maxIndex].priority) // Jeśli prawe dziecko istnieje i ma większy priorytet niż bieżący element lub lewe dziecko.
-    {
-        maxIndex = rightChildIndex; // Zaktualizowanie maksymalnego indeksu.
-    }
-
-    if (index != maxIndex) // Jeśli bieżący element nie jest maksymalny.
-    {
-        std::swap(queue[index], queue[maxIndex]);   // Zamiana miejscami bieżącego elementu z maksymalnym.
-        siftDown(maxIndex);                         // Wywołanie rekurencyjne dla nowego indeksu bieżącego elementu.
-    }
-}
-
-void PriorityQueue_Heap::insert(int element, int priority)
-{
-    if (size == capacity) // Jeśli kolejka jest pełna, należy zmienić jej rozmiar.
-    {
-        resize((capacity == 0) ? 1 : 2 * capacity); // Podwajanie pojemności, chyba że pojemność jest równa zero.
-    }
-    queue[size].element = element;      // Przypisanie elementu do kolejki.
-    queue[size].priority = priority;    // Przypisanie priorytetu do kolejki.
-    ++size;                             // Inkrementacja rozmiaru kolejki.
-    siftUp(size - 1);                   // Przesunięcie nowego elementu w górę kolejki.
+    PriorityQueue_Heap_Node NewNode;
+    NewNode.Element = Element;
+    NewNode.Priority = Priority;
+    Queue[Size] = NewNode;
+    HeapifyUp(Size);
+    Size++;
 }
 
 int PriorityQueue_Heap::extractMax()
 {
-    if (size > 0) // Jeśli kolejka nie jest pusta.
+    if (Size > 0)
     {
-        int maxElement = queue[0].element;  // Zapisanie elementu o najwyższym priorytecie.
-        queue[0] = queue[size - 1];         // Zastąpienie korzenia ostatnim elementem kolejki.
-        --size;                             // Dekrementacja rozmiaru kolejki.
-        siftDown(0);                        // Przesunięcie nowego korzenia w dół kolejki.
-        return maxElement;                  // Zwrócenie elementu o najwyższym priorytecie.
+        int MaxElement = Queue[0].Element;
+        Swap(Queue[0], Queue[Size - 1]);
+        Size--;
+        HeapifyDown(0);
+        return MaxElement;
     }
 }
 
 int PriorityQueue_Heap::peek()
 {
-    if (size > 0) // Jeśli kolejka nie jest pusta.
-    {
-        return queue[0].element; // Zwracamy element o najwyższym priorytecie.
-    }
+    return Queue[0].Element;
 }
-void PriorityQueue_Heap::modifyKey(int element, int priority)
+
+void PriorityQueue_Heap::modifyKey(int Element, int Priority)
 {
-    for (int i = 0; i < size; ++i) // Przeszukujemy kolejkę w poszukiwaniu elementu.
+    for (int i = 0; i < Size; i++)
     {
-        if (queue[i].element == element)            // Jeśli znaleźliśmy element.
+        if (Queue[i].Element == Element && Queue[i].Priority != Priority)
         {
-            int oldPriority = queue[i].priority;    // Zapamiętujemy stary priorytet.
-            queue[i].priority = priority;        // Nadajemy nowy priorytet.
-            if (priority > oldPriority)          // Jeśli nowy priorytet jest większy od starego.
+            int OldPriority = Queue[i].Priority;
+            Queue[i].Priority = Priority;
+            if (Priority > OldPriority)
             {
-                siftUp(i); // Przesuwamy element w górę.
+                HeapifyUp(i);
             }
             else
             {
-                siftDown(i); // Przesuwamy element w dół.
+                HeapifyDown(i);
             }
-            return; // Kończymy działanie metody.
+            return;
         }
     }
+    return;
 }
 
 int PriorityQueue_Heap::returnSize()
 {
-    return size; // Zwracamy rozmiar.
+    return Size;
+}
+
+void PriorityQueue_Heap::HeapifyUp(int Index)
+{
+    while (Index > 0 && Queue[ParentIndex(Index)].Priority < Queue[Index].Priority)
+    {
+        Swap(Queue[Index], Queue[ParentIndex(Index)]);
+        Index = ParentIndex(Index);
+    }
+}
+
+void PriorityQueue_Heap::HeapifyDown(int Index)
+{
+    int MaxIndex = Index;
+    while ((LeftChildIndex(MaxIndex) < Size && Queue[MaxIndex].Priority <= Queue[LeftChildIndex(MaxIndex)].Priority) 
+        || (RightChildIndex(MaxIndex) < Size && Queue[MaxIndex].Priority <= Queue[RightChildIndex(MaxIndex)].Priority))
+    {
+        MaxIndex = (RightChildIndex(MaxIndex) >= Size || Queue[LeftChildIndex(MaxIndex)].Priority > Queue[RightChildIndex(MaxIndex)].Priority) 
+            ? LeftChildIndex(MaxIndex) : RightChildIndex(MaxIndex);
+        Swap(Queue[Index], Queue[MaxIndex]);
+        Index = MaxIndex;
+    }
+}
+
+void PriorityQueue_Heap::Swap(PriorityQueue_Heap_Node& FirstNode, PriorityQueue_Heap_Node& SecondNode)
+{
+    PriorityQueue_Heap_Node TmpNode = FirstNode;
+    FirstNode = SecondNode;
+    SecondNode = TmpNode;
+}
+
+inline int PriorityQueue_Heap::ParentIndex(int Index) const
+{
+    return static_cast<int>(floor((static_cast<double>(Index) - 1.0) / 2.0));
+}
+
+inline int PriorityQueue_Heap::LeftChildIndex(int Index) const
+{
+    return 2 * Index + 1;
+}
+
+inline int PriorityQueue_Heap::RightChildIndex(int Index) const
+{
+    return 2 * Index + 2;
 }
