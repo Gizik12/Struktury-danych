@@ -107,6 +107,7 @@ int main()
 			case '8':
 				dataAmt = 100000;
 				break;
+				
 
 			default:
 				cout << "Unknown error has occured.";

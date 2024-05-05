@@ -28,13 +28,13 @@ public:
     virtual int extractMax() override;
 
     // Zwraca element o najwyższym priorytecie.
-    virtual int peek() override;
+    virtual int peek() const override;
 
     // Modyfikuje priorytet danego elementu.
     virtual void modifyKey(int element, int priority) override;
 
     // Zwraca rozmiar struktury danych.
-    virtual int returnSize() override;
+    virtual int returnSize() const override;
 
     // Tworzy kopię obecnej kolejki priorytetowej.
     virtual PriorityQueue* copy() override;

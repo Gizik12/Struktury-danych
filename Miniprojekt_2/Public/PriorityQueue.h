@@ -11,13 +11,13 @@ public:
     virtual int extractMax() = 0;
 
     // Zwrócenie elementu o najwyższym priorytecie.
-    virtual int peek() = 0;
+    virtual int peek() const = 0;
 
     // Modyfikacja priorytetu danego elementu.
     virtual void modifyKey(int element, int priority) = 0;
 
     // Metoda zwracająca rozmiar struktury danych.
-    virtual int returnSize() = 0;
+    virtual int returnSize() const = 0;
 
     // Metoda zwracająca kopię obecnej kolejki priorytetowej.
     virtual PriorityQueue* copy() = 0;

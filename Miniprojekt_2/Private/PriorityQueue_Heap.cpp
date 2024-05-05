@@ -2,6 +2,7 @@
 
 #include <cmath>
 
+// Konstruktor
 PriorityQueue_Heap::PriorityQueue_Heap()
 {
     queue = nullptr;
@@ -9,13 +10,16 @@ PriorityQueue_Heap::PriorityQueue_Heap()
     size = 0;
 }
 
+// Destruktor
 PriorityQueue_Heap::~PriorityQueue_Heap()
 {
     delete[] queue;
 }
 
+// Metoda dodająca nowy element do kolejki
 void PriorityQueue_Heap::insert(int element, int priority)
 {
+    // Rozszerzenie tablicy, jeśli jest potrzebne
     if (size >= capacity)
     {
         capacity = (capacity == 0) ? 1 : 2 * capacity;
@@ -27,39 +31,48 @@ void PriorityQueue_Heap::insert(int element, int priority)
         delete queue;
         queue = newQueue;
     }
+    // Tworzenie nowego węzła
     PriorityQueue_Heap_Node newNode;
     newNode.element = element;
     newNode.priority = priority;
+    // Dodawanie węzła do kolejki i naprawa kopca
     queue[size] = newNode;
     heapifyUp(size);
     size++;
 }
 
+// Metoda usuwająca i zwracająca element o najwyższym priorytecie
 int PriorityQueue_Heap::extractMax()
 {
     if (size > 0)
     {
+        // Zamiana miejscami pierwszego i ostatniego elementu
         int maxElement = queue[0].element;
         swap(queue[0], queue[size - 1]);
         size--;
+        // Naprawa kopca
         heapifyDown(0);
         return maxElement;
     }
 }
 
+// Metoda zwracająca element o najwyższym priorytecie bez usuwania go
 int PriorityQueue_Heap::peek() const
 {
     return queue[0].element;
 }
 
+// Metoda modyfikująca priorytet danego elementu w kolejce
 void PriorityQueue_Heap::modifyKey(int element, int priority)
 {
+    // Znalezienie elementu w kolejce
     for (int i = 0; i < size; i++)
     {
         if (queue[i].element == element && queue[i].priority != priority)
         {
             int oldPriority = queue[i].priority;
             queue[i].priority = priority;
+            // Naprawa kopca w zależności od zmiany priorytetu
             if (priority > oldPriority)
             {
                 heapifyUp(i);
@@ -74,11 +87,13 @@ void PriorityQueue_Heap::modifyKey(int element, int priority)
     return;
 }
 
+// Metoda zwracająca aktualny rozmiar kolejki
 int PriorityQueue_Heap::returnSize() const
 {
     return size;
 }
 
+// Naprawianie kopca po dodaniu elementu
 void PriorityQueue_Heap::heapifyUp(int index)
 {
     while (index > 0 && queue[parentIndex(index)].priority < queue[index].priority)
@@ -88,6 +103,7 @@ void PriorityQueue_Heap::heapifyUp(int index)
     }
 }
 
+// Naprawianie kopca po usunięciu elementu
 void PriorityQueue_Heap::heapifyDown(int index)
 {
     int maxIndex = index;
@@ -101,6 +117,7 @@ void PriorityQueue_Heap::heapifyDown(int index)
     }
 }
 
+// Tworzenie głębokiej kopii kolejki
 PriorityQueue* PriorityQueue_Heap::copy()
 {
     if (size > 0)
@@ -119,6 +136,7 @@ PriorityQueue* PriorityQueue_Heap::copy()
     }
 }
 
+// Metoda pomocnicza do zamiany miejscami dwóch elementów w kolejce
 void PriorityQueue_Heap::swap(PriorityQueue_Heap_Node& firstNode, PriorityQueue_Heap_Node& secondNode)
 {
     PriorityQueue_Heap_Node tmpNode = firstNode;
@@ -126,6 +144,7 @@ void PriorityQueue_Heap::swap(PriorityQueue_Heap_Node& firstNode, PriorityQueue_
     secondNode = tmpNode;
 }
 
+// Metody pomocnicze do nawigacji po kopcu binarnym
 inline int PriorityQueue_Heap::parentIndex(int index) const
 {
     return static_cast<int>(floor((static_cast<double>(index) - 1.0) / 2.0));
