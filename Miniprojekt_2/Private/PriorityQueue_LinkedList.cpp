@@ -109,7 +109,22 @@ void PriorityQueue_LinkedList::modifyKey(int element, int priority)
     }
 }
 
-int PriorityQueue_LinkedList::returnSize()
+int PriorityQueue_LinkedList::returnSize() const
 {
-    return size;
+    return size; // Zwraca rozmiar.
+}
+
+PriorityQueue* PriorityQueue_LinkedList::copy()
+{
+    PriorityQueue_LinkedList* copiedList = new PriorityQueue_LinkedList;    // Nowa kopia.
+    PriorityQueue_LinkedList_Node* currentNode = headNode;                  // Kopiowanie elementów zaczyna się od headNode.
+
+    while (currentNode != nullptr)
+    {
+        int copiedElement = currentNode->element;           // Element do kopiowania.
+        int copiedPriority = currentNode->priority;         // Priorytet do kopiowania.
+        copiedList->insert(copiedElement, copiedPriority);  // Dodanie kopii węzła do kopii kolejki.
+        currentNode = currentNode->nextNode;                // Przejście na kolejny węzeł.
+    }
+    return copiedList; // Zwraca kopie.
 }

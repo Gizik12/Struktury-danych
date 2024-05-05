@@ -5,40 +5,49 @@ using namespace std;
 #ifndef PRIORITY_QUEUE_HEAP_H
 #define PRIORITY_QUEUE_HEAP_H
 
-class PriorityQueue_Heap : public PriorityQueue
+struct PriorityQueue_Heap_Node
 {
-private:
-    struct PriorityQueue_Heap_Node {
-        int Element;
-        int Priority;
-    };
+    int element;
+    int priority;
+};
 
-    PriorityQueue_Heap_Node *Queue;
-    int Capacity;
-    int Size;
-
-    inline int ParentIndex(int Index) const;
-    inline int LeftChildIndex(int Index) const;
-    inline int RightChildIndex(int Index) const;
-
-    void HeapifyUp(int Index);
-
-    void HeapifyDown(int Index);
-
+class PriorityQueue_Heap final : public PriorityQueue
+{
 public:
- 
+
     PriorityQueue_Heap();
 
     ~PriorityQueue_Heap();
 
-    void Swap(PriorityQueue_Heap_Node& FirstNode, PriorityQueue_Heap_Node& SecondNode);
+    virtual void insert(int element, int priority) override;
 
-    void modifyKey(int Element, int Priority);
+    virtual int extractMax() override;
+
+    virtual int peek() const override;
     
-    int peek();
+    virtual void modifyKey(int element, int priority) override;
+    
+    virtual int returnSize() const override;
 
-    void insert(int Element, int Priority);
-    int extractMax();
-    int returnSize();
+    void swap(PriorityQueue_Heap_Node& firstNode, PriorityQueue_Heap_Node& secondNode);
+
+private:
+
+    PriorityQueue_Heap_Node* queue;
+    int capacity;
+    int size;
+
+    inline int parentIndex(int index) const;
+
+    inline int leftChildIndex(int index) const;
+
+    inline int rightChildIndex(int index) const;
+
+    void heapifyUp(int index);
+
+    void heapifyDown(int index);
+
+    virtual PriorityQueue* copy() override;
 };
+
 #endif

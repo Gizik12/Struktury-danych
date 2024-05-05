@@ -12,7 +12,7 @@ struct PriorityQueue_LinkedList_Node
 };
 
 // Klasa kolejki priorytetowej zaimplementowanej jako lista wiązana (jednokierunkowa).
-class PriorityQueue_LinkedList : public PriorityQueue
+class PriorityQueue_LinkedList final : public PriorityQueue
 {
 public:
 	// Konstruktor.
@@ -35,6 +35,9 @@ public:
 
     // Zwraca rozmiar struktury danych.
     virtual int returnSize() override;
+
+    // Tworzy kopię obecnej kolejki priorytetowej.
+    virtual PriorityQueue* copy() override;
 
 private:
 	PriorityQueue_LinkedList_Node* headNode;    // Wskaźnik na początek kolejki.

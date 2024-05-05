@@ -18,6 +18,9 @@ public:
 
     // Metoda zwracająca rozmiar struktury danych.
     virtual int returnSize() = 0;
+
+    // Metoda zwracająca kopię obecnej kolejki priorytetowej.
+    virtual PriorityQueue* copy() = 0;
 };
 
 #endif
