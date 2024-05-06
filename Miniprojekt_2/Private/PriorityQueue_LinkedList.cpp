@@ -1,201 +1,130 @@
-#include "../Public/PriorityQueue_Heap.h"
+#include "../Public/PriorityQueue_LinkedList.h"
 
-#include <cmath>
-
-// Konstruktor klasy PriorityQueue_Heap
-PriorityQueue_Heap::PriorityQueue_Heap()
+PriorityQueue_LinkedList::PriorityQueue_LinkedList()
 {
-    // Inicjalizuje wskaźnik na tablicę na nullptr, co oznacza brak przypisanej pamięci.
-    queue = nullptr;
-    // Inicjalizuje pojemność kolejki na 0.
-    capacity = 0;
-    // Inicjalizuje rozmiar kolejki na 0.
+    headNode = nullptr;
     size = 0;
 }
 
-// Destruktor klasy PriorityQueue_Heap
-PriorityQueue_Heap::~PriorityQueue_Heap()
+PriorityQueue_LinkedList::~PriorityQueue_LinkedList()
 {
-    // Zwolnienie pamięci zajętej przez tablicę przechowującą elementy kolejki.
-    delete[] queue;
-}
-
-// Metoda insert, która dodaje nowy element do kolejki
-void PriorityQueue_Heap::insert(int element, int priority)
-{
-    // Sprawdzenie, czy aktualny rozmiar kolejki jest większy lub równy pojemności
-    if (size >= capacity)
+    while (headNode)
     {
-        // Jeśli tak, zwiększa pojemność kolejki o dwukrotność aktualnej pojemności
-        capacity = (capacity == 0) ? 1 : 2 * capacity;
-        // Tworzy nową tablicę o zwiększonej pojemności
-        PriorityQueue_Heap_Node* newQueue = new PriorityQueue_Heap_Node[capacity];
-        // Kopiuje elementy z aktualnej kolejki do nowej
-        for (int i = 0; i < size; i++)
-        {
-            newQueue[i] = queue[i];
-        }
-        // Zwolnienie pamięci zajętej przez starą kolejkę
-        delete queue;
-        // Przypisanie nowej kolejki do wskaźnika
-        queue = newQueue;
+        PriorityQueue_LinkedList_Node* oldHeadNode = headNode;  // Wskaźnik na stary headNode.
+        headNode = headNode->nextNode;                          // Następny węzeł jest nowym headNode.
+        delete oldHeadNode;                                     // Usunięcie starego headNode.
     }
-    // Tworzy nowy węzeł kolejki
-    PriorityQueue_Heap_Node newNode;
-    newNode.element = element;
-    newNode.priority = priority;
-    // Dodaje nowy węzeł do kolejki
-    queue[size] = newNode;
-    // Przywraca właściwości kopca
-    heapifyUp(size);
-    // Zwiększa rozmiar kolejki
-    size++;
 }
 
-// Metoda extractMax, która usuwa i zwraca element o najwyższym priorytecie z kolejki
-int PriorityQueue_Heap::extractMax()
+void PriorityQueue_LinkedList::insert(int element, int priority)
 {
-    // Sprawdza, czy kolejka nie jest pusta
+    PriorityQueue_LinkedList_Node* newNode = new PriorityQueue_LinkedList_Node; // Nowy węzeł.
+    newNode->element = element;                                                 // Ustawienie wartości newNode.
+    newNode->priority = priority;                                               // Ustawienie priorytetu newNode.
+
+    if (size <= 0)
+    {
+        headNode = newNode; // Dodanie pierwszego węzła jeśli kolejka jest pusta.
+    }
+    else if (priority > headNode->priority)
+    {
+        newNode->nextNode = headNode;   // Następnym węzłem newNode jest obecny headNode.
+        headNode = newNode;             // Węzeł newNode jest nowym headNode.
+    }
+    else
+    {
+        PriorityQueue_LinkedList_Node* currentNode = headNode; // Przechodzenie po kolejce zaczyna się od headNode.
+        while (currentNode->nextNode && currentNode->nextNode->priority >= priority)
+        {
+            currentNode = currentNode->nextNode; // Przejście na kolejny węzeł.
+        }
+        newNode->nextNode = currentNode->nextNode;  // Ustawienie następnego węzła po newNode na węzeł po currentNode.
+        currentNode->nextNode = newNode;            // Wstawienie newNode między currentNode, a currentNode->nextNode.
+    }
+    size++; // Zwiększenie liczby elementów w kolejce.
+}
+
+int PriorityQueue_LinkedList::extractMax()
+{
     if (size > 0)
     {
-        // Zapisuje element o najwyższym priorytecie
-        int maxElement = queue[0].element;
-        // Zamienia miejscami pierwszy i ostatni element kolejki
-        swap(queue[0], queue[size - 1]);
-        // Zmniejsza rozmiar kolejki
-        size--;
-        // Przywraca właściwości kopca
-        heapifyDown(0);
-        // Zwraca element o najwyższym priorytecie
-        return maxElement;
+        int maxData = headNode->element;                        // Wartość headNode.
+        PriorityQueue_LinkedList_Node* oldHeadNode = headNode;  // Wskaźnik na stary headNode.
+        headNode = headNode->nextNode;                          // Następny węzeł jest nowym headNode.
+        delete oldHeadNode;                                     // Usunięcie starego headNode.
+        size--;                                                 // Zmniejszenie liczby elementów kolejki.
+
+        return maxData; // Zwraca wartość starego headNode.
     }
 }
 
-// Metoda peek, która zwraca element o najwyższym priorytecie z kolejki bez usuwania go
-int PriorityQueue_Heap::peek() const
+int PriorityQueue_LinkedList::peek() const
 {
-    // Zwraca element o najwyższym priorytecie (pierwszy element kolejki)
-    return queue[0].element;
+    if (size > 0)
+    {
+        return headNode->element; // Zwraca wartość headNode.
+    }
 }
 
-// Metoda modifyKey, która modyfikuje priorytet danego elementu w kolejce
-void PriorityQueue_Heap::modifyKey(int element, int priority)
+void PriorityQueue_LinkedList::modifyKey(int element, int priority)
 {
-    // Szuka elementu w kolejce
-    for (int i = 0; i < size; i++)
+    if (size > 0)
     {
-        // Jeśli element zostanie znaleziony i jego priorytet różni się od nowego priorytetu
-        if (queue[i].element == element && queue[i].priority != priority)
+        PriorityQueue_LinkedList_Node* changedNode = headNode;  // Pierwsze wystąpienie węzła o podanej wartości.
+        PriorityQueue_LinkedList_Node* prevNode = nullptr;      // Wskaźnik na węzeł poprzedzający currentNode.
+
+        while (changedNode != nullptr && changedNode->element != element)
         {
-            // Zapisuje stary priorytet
-            int oldPriority = queue[i].priority;
-            // Zmienia priorytet elementu
-            queue[i].priority = priority;
-            // Naprawia właściwości kopca w zależności od zmiany priorytetu
-            if (priority > oldPriority)
+            prevNode = changedNode;                 // Zapamiętanie ostatnio odzwiedzonego węzła.
+            changedNode = changedNode->nextNode;    // Przejście na kolejny węzeł.
+        }
+        if (changedNode != nullptr)
+        {
+            changedNode->priority = priority;   // Zmiana priorytetu pierwszego znalezionego elementu o podanej wartości.
+            if (prevNode != nullptr)
             {
-                heapifyUp(i);
+                prevNode->nextNode = changedNode->nextNode; // Połączenie węzłów, pomiędzy którymi znajduje się changedNode.
             }
             else
             {
-                heapifyDown(i);
+                headNode = changedNode->nextNode; // Ustawienie nowego headNode.
             }
-            // Zakończenie pętli
-            return;
+
+            if (priority > headNode->priority)
+            {
+                changedNode->nextNode = headNode;   // Ustawienie węzła po changedNode na obecny headNode.
+                headNode = changedNode;             // Węzeł changedNode jest nowym headNode.
+            }
+            else
+            {
+                PriorityQueue_LinkedList_Node* currentNode = headNode; // Przechodzenie po kolejce zaczyna się od headNode.
+                while (currentNode->nextNode && currentNode->nextNode->priority >= priority)
+                {
+                    currentNode = currentNode->nextNode; // Przejście na kolejny węzeł.
+                }
+                changedNode->nextNode = currentNode->nextNode;  // Ustawienie następnego węzła po changedNode na węzeł po currentNode.
+                currentNode->nextNode = changedNode;            // Wstawienie changedNode między currentNode, a currentNode->nextNode.
+            }
         }
     }
 }
 
-// Metoda returnSize, która zwraca aktualny rozmiar kolejki
-int PriorityQueue_Heap::returnSize() const
+int PriorityQueue_LinkedList::returnSize() const
 {
-    // Zwraca rozmiar kolejki
-    return size;
+    return size; // Zwraca rozmiar.
 }
 
-// Metoda heapifyUp, która przywraca właściwości kopca po dodaniu nowego elementu
-void PriorityQueue_Heap::heapifyUp(int index)
+PriorityQueue* PriorityQueue_LinkedList::copy()
 {
-    // Pętla wykonuje się dopóki indeks jest większy od 0 i priorytet rodzica jest mniejszy niż priorytet bieżącego węzła
-    while (index > 0 && queue[parentIndex(index)].priority < queue[index].priority)
+    PriorityQueue_LinkedList* copiedList = new PriorityQueue_LinkedList;    // Nowa kopia.
+    PriorityQueue_LinkedList_Node* currentNode = headNode;                  // Kopiowanie elementów zaczyna się od headNode.
+
+    while (currentNode != nullptr)
     {
-        // Zamienia miejscami rodzica i bieżący węzeł
-        swap(queue[index], queue[parentIndex(index)]);
-        // Przesuwa się w górę kopca
-        index = parentIndex(index);
+        int copiedElement = currentNode->element;           // Element do kopiowania.
+        int copiedPriority = currentNode->priority;         // Priorytet do kopiowania.
+        copiedList->insert(copiedElement, copiedPriority);  // Dodanie kopii węzła do kopii kolejki.
+        currentNode = currentNode->nextNode;                // Przejście na kolejny węzeł.
     }
-}
-
-// Metoda heapifyDown, która przywraca właściwości kopca po usunięciu elementu
-void PriorityQueue_Heap::heapifyDown(int index)
-{
-    // Zmienna przechowująca indeks węzła z najwyższym priorytetem
-    int maxIndex = index;
-    // Pętla wykonuje się dopóki lewe dziecko znajduje się w granicach kolejki i priorytet rodzica jest mniejszy lub równy priorytetowi lewego dziecka,
-    // lub dopóki prawe dziecko znajduje się w granicach kolejki i priorytet rodzica jest mniejszy lub równy priorytetowi prawego dziecka
-    while ((leftChildIndex(maxIndex) < size && queue[maxIndex].priority <= queue[leftChildIndex(maxIndex)].priority)
-        || (rightChildIndex(maxIndex) < size && queue[maxIndex].priority <= queue[rightChildIndex(maxIndex)].priority))
-    {
-        // Ustala indeks węzła z najwyższym priorytetem, wybierając większe dziecko lub lewe dziecko, jeśli oba mają równy priorytet
-        maxIndex = (rightChildIndex(maxIndex) >= size || queue[leftChildIndex(maxIndex)].priority > queue[rightChildIndex(maxIndex)].priority)
-            ? leftChildIndex(maxIndex) : rightChildIndex(maxIndex);
-        // Zamienia miejscami bieżący węzeł z węzłem o najwyższym priorytecie
-        swap(queue[index], queue[maxIndex]);
-        // Przesuwa się w dół kopca
-        index = maxIndex;
-    }
-}
-
-// Metoda copy, która tworzy głęboką kopię kolejki
-PriorityQueue* PriorityQueue_Heap::copy()
-{
-    // Sprawdza, czy kolejka nie jest pusta
-    if (size > 0)
-    {
-        // Tworzy nowy obiekt kopii kolejki
-        PriorityQueue_Heap* copiedHeap = new PriorityQueue_Heap;
-        // Przypisuje pojemność i alokuje pamięć na kopię kolejki
-        copiedHeap->capacity = capacity;
-        copiedHeap->queue = new PriorityQueue_Heap_Node[capacity];
-
-        // Kopiuje elementy z oryginalnej kolejki do kopii
-        for (int i = 0; i < size; i++)
-        {
-            int copiedElement = queue[i].element;
-            int copiedPriority = queue[i].priority;
-            copiedHeap->insert(copiedElement, copiedPriority);
-        }
-        // Zwraca kopię kolejki
-        return copiedHeap;
-    }
-}
-
-// Metoda swap, która zamienia miejscami dwa elementy kolejki
-void PriorityQueue_Heap::swap(PriorityQueue_Heap_Node& firstNode, PriorityQueue_Heap_Node& secondNode)
-{
-    // Zamienia wartości dwóch węzłów kolejki za pomocą zmiennej tymczasowej
-    PriorityQueue_Heap_Node tmpNode = firstNode;
-    firstNode = secondNode;
-    secondNode = tmpNode;
-}
-
-// Metoda parentIndex, która zwraca indeks rodzica danego węzła w kopcu
-inline int PriorityQueue_Heap::parentIndex(int index) const
-{
-    // Oblicza indeks rodzica za pomocą formuły (index - 1) / 2 i zaokrągla wynik w dół
-    return static_cast<int>(floor((static_cast<double>(index) - 1.0) / 2.0));
-}
-
-// Metoda leftChildIndex, która zwraca indeks lewego dziecka danego węzła w kopcu
-inline int PriorityQueue_Heap::leftChildIndex(int index) const
-{
-    // Oblicza indeks lewego dziecka za pomocą formuły 2 * index + 1
-    return 2 * index + 1;
-}
-
-// Metoda rightChildIndex, która zwraca indeks prawego dziecka danego węzła w kopcu
-inline int PriorityQueue_Heap::rightChildIndex(int index) const
-{
-    // Oblicza indeks prawego dziecka za pomocą formuły 2 * index + 2
-    return 2 * index + 2;
+    return copiedList; // Zwraca kopie.
 }

@@ -119,8 +119,36 @@ int main()
 			switch (priorityQueue_opt)
 			{
 			case '1':
+			/* //KOPIEC
+			 * 	//BEST-CASE
+			 *  	p = 1;
+			 *		for (int i = 0; i < dataAmt; i++)
+			 *		{
+			 *			priorityQueue->insert(GenerateRandomNumber(-2147483647, 2147483647), GenerateRandomNumber(2, maxPriority);
+			 *		}
+			 *  //WORST-CASE
+			 *    	p = maxPriority;
+			 * 		for (int i = 0; i < dataAmt; i++)
+			 *		{
+			 *			priorityQueue->insert(GenerateRandomNumber(-2147483647, 2147483647), GenerateRandomNumber(1, maxPriority - 1);
+			 *		}
+			 * 
+			 * //LISTA
+			 *	//BEST-CASE
+			 *		p = maxPriority;
+			 *		for (int i = 0; i < dataAmt; i++)
+			 *		{
+			 *			priorityQueue->insert(GenerateRandomNumber(-2147483647, 2147483647), GenerateRandomNumber(1, maxPriority - 1));
+			 *		}
+			 *	//WORST-CASE
+			 *		p = 1;
+			 *		for (int i = 0; i < dataAmt; i++)
+			 *		{
+			 *			priorityQueue->insert(GenerateRandomNumber(-2147483647, 2147483647), GenerateRandomNumber(2, maxPriority));
+			 *		}
+			*/
 				e = GenerateRandomNumber(-2147483647, 2147483647);
-				p = GenerateRandomNumber(0, maxPriority);
+				p = GenerateRandomNumber(1, maxPriority);
 				for (int i = 0; i < dataAmt; i++)
 				{
 					priorityQueue->insert(GenerateRandomNumber(-2147483647, 2147483647), GenerateRandomNumber(1, maxPriority));
@@ -171,13 +199,51 @@ int main()
 				break;
 
 			case '4':
+			/* //KOPIEC
+			 * 	//BEST-CASE
+			 *		for (int i = 0; i < dataAmt - 1; i++)
+			 *		{
+			 *			priorityQueue->insert(GenerateRandomNumber(-2147483647, 2147483646), GenerateRandomNumber(1, maxPriority - 2));
+			 *		}
+			 *		priorityQueue->insert(2147483647, maxPriority - 1);
+			 *		e = 2147483647;
+			 *		p = maxPriority;
+			 *
+			 *  //WORST-CASE
+			 * 		for (int i = 0; i < dataAmt - 1; i++)
+			 *		{
+			 *			priorityQueue->insert(GenerateRandomNumber(-2147483647, 2147483646), GenerateRandomNumber(2, maxPriority - 1));
+			 *		}
+			 *		priorityQueue->insert(2147483647, 1);
+			 *		e = 2147483647;
+			 *		p = maxPriority;
+			 *
+			 * //LISTA
+			 *	//BEST-CASE
+			 *		for (int i = 0; i < dataAmt - 1; i++)
+			 *		{
+			 *			priorityQueue->insert(GenerateRandomNumber(-2147483647, 2147483646), GenerateRandomNumber(1, maxPriority - 2));
+			 *		}
+			 *		priorityQueue->insert(2147483647, maxPriority - 1);
+			 *		e = 2147483647;
+			 *		p = maxPriority;
+			 *
+			 *	//WORST-CASE
+			 *		for (int i = 0; i < dataAmt - 1; i++)
+			 *		{
+			 *			priorityQueue->insert(GenerateRandomNumber(-2147483647, 2147483646), GenerateRandomNumber(3, maxPriority));
+			 *		}
+			 *		priorityQueue->insert(2147483647, 2);
+			 *		e = 2147483647;
+			 *		p = 1;
+			*/
 				cout << "Generowanie losowej kolejki...\n";
 				for (int i = 0; i < dataAmt; i++)
 				{
 					priorityQueue->insert(GenerateRandomNumber(-2147483647, 2147483647), GenerateRandomNumber(1, maxPriority));
 				}
 				e = GenerateRandomNumber(-2147483647, 2147483647);
-				p = GenerateRandomNumber(0, maxPriority);
+				p = GenerateRandomNumber(1, maxPriority);
 				for (int i = 0; i < 100; i++)
 				{
 					priorityQueueH = priorityQueue->copy();
