@@ -11,6 +11,7 @@ int main()
 {
 	setlocale(LC_ALL, "pl_PL"); // Ustawienie języka polskiego.
 
+	int w;
 	PriorityQueue* priorityQueue;			// Wskaźnik na wybrany typ kolejki.
 	PriorityQueue* priorityQueueH;			// Wskaźnik na wybrany typ kolejki pomocniczy.
 	char priorityQueue_type;				// Wybrany typ kolejki.
@@ -70,9 +71,9 @@ int main()
 			do
 			{
 				system("cls");
-				cout << "Wybierz ilość danych:\n1. 5 000\n2. 8 000\n3. 10 000\n4. 16 000\n5. 20 000\n6. 40 000\n7. 60 000\n8. 100 000\n";
+				cout << "Wybierz ilość danych:\n1. 5 000\n2. 8 000\n3. 10 000\n4. 16 000\n5. 20 000\n6. 40 000\n7. 60 000\n8. 100 000\n9. Dowolna\n";
 				cin >> dataAmt_type;
-			} while (dataAmt_type != '1' && dataAmt_type != '2' && dataAmt_type != '3' && dataAmt_type != '4' && dataAmt_type != '5' && dataAmt_type != '6' && dataAmt_type != '7' && dataAmt_type != '8');
+			} while (dataAmt_type != '1' && dataAmt_type != '2' && dataAmt_type != '3' && dataAmt_type != '4' && dataAmt_type != '5' && dataAmt_type != '6' && dataAmt_type != '7' && dataAmt_type != '8' && dataAmt_type != '9');
 
 			switch (dataAmt_type)
 			{
@@ -106,6 +107,12 @@ int main()
 
 			case '8':
 				dataAmt = 100000;
+				break;
+
+			case '9':
+				cout << "Podaj wartosc" << endl;
+				cin >> w;
+				dataAmt = w;
 				break;
 				
 
@@ -151,7 +158,7 @@ int main()
 				p = GenerateRandomNumber(1, maxPriority);
 				for (int i = 0; i < dataAmt; i++)
 				{
-					priorityQueue->insert(GenerateRandomNumber(-2147483647, 2147483647), GenerateRandomNumber(1, maxPriority));
+					priorityQueue->insert(GenerateRandomNumber(-2147483647, 2147483647), GenerateRandomNumber(2, maxPriority));
 				}
 				for (int i = 0; i < 100; i++)
 				{
@@ -240,9 +247,9 @@ int main()
 				cout << "Generowanie losowej kolejki...\n";
 				for (int i = 0; i < dataAmt; i++)
 				{
-					priorityQueue->insert(GenerateRandomNumber(-2147483647, 2147483647), GenerateRandomNumber(1, maxPriority));
+					priorityQueue->insert(GenerateRandomNumber(-2147483647, 2147483646), GenerateRandomNumber(1, maxPriority));
 				}
-				e = GenerateRandomNumber(-2147483647, 2147483647);
+				e = GenerateRandomNumber(-2147483647, 2147483646);
 				p = GenerateRandomNumber(1, maxPriority);
 				for (int i = 0; i < 100; i++)
 				{

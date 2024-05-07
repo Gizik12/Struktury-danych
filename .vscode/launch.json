@@ -8,8 +8,8 @@
       "args": [],
       "stopAtEntry": false,
       "externalConsole": true,
-      "cwd": "c:/Users/Sprzetowo/Downloads",
-      "program": "c:/Users/Sprzetowo/Downloads/build/Debug/outDebug",
+      "cwd": "c:/Users/Sprzetowo/Desktop/Struktury-danych/Miniprojekt_2/Private",
+      "program": "c:/Users/Sprzetowo/Desktop/Struktury-danych/Miniprojekt_2/Private/build/Debug/outDebug",
       "MIMode": "gdb",
       "miDebuggerPath": "gdb",
       "setupCommands": [
