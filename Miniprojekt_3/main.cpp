@@ -1,6 +1,7 @@
 #include <iostream>
 
-#include "Public/HashTable.h"
+#include "Public/HashTable_List.h"
+#include "Public/HashTable_CuckooHashing.h"
 
 using namespace std;
 
