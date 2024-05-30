@@ -3,7 +3,9 @@
 #ifndef HASH_TABLE_CUCKOO_HASHING
 #define HASH_TABLE_CUCKOO_HASHING
 
-// Struktura pary klucz-wartość
+const int INSERT_ATTEMPTS_LIMIT = 5; // Limit prób wstawienia nowej pary do jedenj z tablic, po przekroczeniu następuje przemieszanie.
+
+// Struktura pary klucz-wartość.
 struct Pair
 {
 	int key = -1;	// Klucz.

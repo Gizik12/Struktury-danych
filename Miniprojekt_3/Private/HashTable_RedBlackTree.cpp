@@ -1,4 +1,4 @@
-#include "HashTable_RedBlackTree.h"
+#include "../Public/HashTable_RedBlackTree.h"
 
 
 // Funkcje klasy RBTreeNode
@@ -19,7 +19,7 @@ void RedBlackTree::rotateLeft(RBTreeNode*& root, RBTreeNode*& pt)
 
     if (pt->right != nullptr)
     {
-       pt->right->parent = pt; 
+        pt->right->parent = pt;
     }
 
     pt_right->parent = pt->parent;
@@ -31,7 +31,7 @@ void RedBlackTree::rotateLeft(RBTreeNode*& root, RBTreeNode*& pt)
 
     else if (pt == pt->parent->left)
     {
-       pt->parent->left = pt_right; 
+        pt->parent->left = pt_right;
     }
     else
     {
@@ -51,12 +51,12 @@ void RedBlackTree::rotateRight(RBTreeNode*& root, RBTreeNode*& pt)
     {
         pt->left->parent = pt;
     }
-    
+
     pt_left->parent = pt->parent;
 
     if (pt->parent == nullptr)
     {
-       root = pt_left; 
+        root = pt_left;
     }
     else if (pt == pt->parent->left)
     {
@@ -64,7 +64,7 @@ void RedBlackTree::rotateRight(RBTreeNode*& root, RBTreeNode*& pt)
     }
     else
     {
-        pt->parent->right = pt_left; 
+        pt->parent->right = pt_left;
     }
     pt_left->right = pt;
     pt->parent = pt_left;
@@ -75,24 +75,24 @@ void RedBlackTree::fixViolation(RBTreeNode*& root, RBTreeNode*& pt)
     RBTreeNode* parent_pt = nullptr;
     RBTreeNode* grand_parent_pt = nullptr;
 
-    while ((pt != root) && (pt->color != BLACK) && (pt->parent->color == RED)) 
+    while ((pt != root) && (pt->color != BLACK) && (pt->parent->color == RED))
     {
         parent_pt = pt->parent;
         grand_parent_pt = pt->parent->parent;
 
-        if (parent_pt == grand_parent_pt->left) 
+        if (parent_pt == grand_parent_pt->left)
         {
             RBTreeNode* uncle_pt = grand_parent_pt->right;
-            if (uncle_pt != nullptr && uncle_pt->color == RED) 
+            if (uncle_pt != nullptr && uncle_pt->color == RED)
             {
                 grand_parent_pt->color = RED;
                 parent_pt->color = BLACK;
                 uncle_pt->color = BLACK;
                 pt = grand_parent_pt;
-            } 
-            else 
+            }
+            else
             {
-                if (pt == parent_pt->right) 
+                if (pt == parent_pt->right)
                 {
                     rotateLeft(root, parent_pt);
                     pt = parent_pt;
@@ -102,20 +102,20 @@ void RedBlackTree::fixViolation(RBTreeNode*& root, RBTreeNode*& pt)
                 swap(parent_pt->color, grand_parent_pt->color);
                 pt = parent_pt;
             }
-        } 
-        else 
+        }
+        else
         {
             RBTreeNode* uncle_pt = grand_parent_pt->left;
-            if ((uncle_pt != nullptr) && (uncle_pt->color == RED)) 
+            if ((uncle_pt != nullptr) && (uncle_pt->color == RED))
             {
                 grand_parent_pt->color = RED;
                 parent_pt->color = BLACK;
                 uncle_pt->color = BLACK;
                 pt = grand_parent_pt;
-            } 
-            else 
+            }
+            else
             {
-                if (pt == parent_pt->left) 
+                if (pt == parent_pt->left)
                 {
                     rotateRight(root, parent_pt);
                     pt = parent_pt;
@@ -149,12 +149,12 @@ RBTreeNode* RedBlackTree::BSTInsert(RBTreeNode* root, RBTreeNode* pt)
     {
         return pt;
     }
-    if (pt->key < root->key) 
+    if (pt->key < root->key)
     {
         root->left = BSTInsert(root->left, pt);
         root->left->parent = root;
-    } 
-    else if (pt->key > root->key) 
+    }
+    else if (pt->key > root->key)
     {
         root->right = BSTInsert(root->right, pt);
         root->right->parent = root;
@@ -185,7 +185,7 @@ void RedBlackTree::setRoot(RBTreeNode* newRoot)
     root = newRoot;
 }
 // Funkcje klasy HashTable_RB
-int HashTable_RB::hashFunction(int key)
+int HashTable_RB::hashFunction(int key) const
 {
     return key % capacity;
 }
@@ -193,8 +193,8 @@ int HashTable_RB::hashFunction(int key)
 HashTable_RB::HashTable_RB(int cap)
 {
     capacity = cap;
-    hashTable = new RedBlackTree*[capacity];
-    for (int i = 0; i < capacity; i++) 
+    hashTable = new RedBlackTree * [capacity];
+    for (int i = 0; i < capacity; i++)
     {
         hashTable[i] = new RedBlackTree();
     }
@@ -202,7 +202,7 @@ HashTable_RB::HashTable_RB(int cap)
 
 HashTable_RB::~HashTable_RB()
 {
-    for (int i = 0; i < capacity; i++) 
+    for (int i = 0; i < capacity; i++)
     {
         delete hashTable[i];
     }
@@ -215,7 +215,7 @@ void HashTable_RB::insert(int key, int value)
     hashTable[hashIndex]->insert(key, value);
 }
 
-int HashTable_RB::search(int key)
+int HashTable_RB::search(int key) const
 {
     int hashIndex = hashFunction(key);
     RBTreeNode* node = hashTable[hashIndex]->search(hashTable[hashIndex]->getRoot(), key);
@@ -229,12 +229,12 @@ void HashTable_RB::remove(int key)
     RBTreeNode* root = tree->getRoot();
     RBTreeNode* nodeToRemove = tree->search(root, key);
 
-    if (nodeToRemove) 
+    if (nodeToRemove)
     {
         RBTreeNode* parent = nodeToRemove->parent;
 
         // Jeśli węzeł do usunięcia ma dwoje dzieci
-        if (nodeToRemove->left != nullptr && nodeToRemove->right != nullptr) 
+        if (nodeToRemove->left != nullptr && nodeToRemove->right != nullptr)
         {
             // Znajdź następnik węzła do usunięcia (najmniejszy w prawym poddrzewie)
             RBTreeNode* successor = nodeToRemove->right;
@@ -254,15 +254,16 @@ void HashTable_RB::remove(int key)
         RBTreeNode* child = (nodeToRemove->right == nullptr) ? nodeToRemove->left : nodeToRemove->right;
 
         // Jeśli węzeł do usunięcia jest korzeniem drzewa
-        if (parent == nullptr) 
+        if (parent == nullptr)
         {
             tree->setRoot(child); // Użycie metody setRoot
-        } 
+        }
         else {
             // Zaktualizuj wskaźnik rodzica na dziecko węzła do usunięcia
             if (nodeToRemove == parent->left) {
                 parent->left = child;
-            } else {
+            }
+            else {
                 parent->right = child;
             }
         }
@@ -276,4 +277,3 @@ void HashTable_RB::remove(int key)
         delete nodeToRemove;
     }
 }
-

@@ -5,7 +5,7 @@
 
 enum Color { RED, BLACK };
 
-struct RBTreeNode 
+struct RBTreeNode
 {
     int key;
     int value;
@@ -17,7 +17,7 @@ struct RBTreeNode
     RBTreeNode(int k, int v);
 };
 
-class RedBlackTree 
+class RedBlackTree
 {
 private:
     RBTreeNode* root;
@@ -41,24 +41,24 @@ public:
     void setRoot(RBTreeNode* newRoot);
 };
 
-class HashTable_RB 
+class HashTable_RB : public HashTable
 {
 private:
     RedBlackTree** hashTable;
     int capacity;
 
-    int hashFunction(int key);
+    virtual int hashFunction(int key) const override;
 
 public:
     HashTable_RB(int cap);
 
     ~HashTable_RB();
 
-    virtual void insert(int key, int value);
+    virtual void insert(int key, int value) override;
 
-    virtual int search(int key);
+    virtual int search(int key) const override;
 
-    virtual void remove(int key);
+    virtual void remove(int key) override;
 };
 
 template <typename T>
