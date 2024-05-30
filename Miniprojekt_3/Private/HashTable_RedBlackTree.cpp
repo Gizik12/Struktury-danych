@@ -1,6 +1,5 @@
 #include "HashTable_RedBlackTree.h"
 
-#include <utility>
 
 // Funkcje klasy RBTreeNode
 RBTreeNode::RBTreeNode(int k, int v)
@@ -100,7 +99,7 @@ void RedBlackTree::fixViolation(RBTreeNode*& root, RBTreeNode*& pt)
                     parent_pt = pt->parent;
                 }
                 rotateRight(root, grand_parent_pt);
-                std::swap(parent_pt->color, grand_parent_pt->color);
+                swap(parent_pt->color, grand_parent_pt->color);
                 pt = parent_pt;
             }
         } 
@@ -123,7 +122,7 @@ void RedBlackTree::fixViolation(RBTreeNode*& root, RBTreeNode*& pt)
                     parent_pt = pt->parent;
                 }
                 rotateLeft(root, grand_parent_pt);
-                std::swap(parent_pt->color, grand_parent_pt->color);
+                swap(parent_pt->color, grand_parent_pt->color);
                 pt = parent_pt;
             }
         }
@@ -244,8 +243,8 @@ void HashTable_RB::remove(int key)
             }
 
             // Zamień klucz i wartość następnika z kluczem i wartością węzła do usunięcia
-            std::swap(nodeToRemove->key, successor->key);
-            std::swap(nodeToRemove->value, successor->value);
+            swap(nodeToRemove->key, successor->key);
+            swap(nodeToRemove->value, successor->value);
 
             // Węzeł do usunięcia teraz staje się następnikiem i przechodzimy do usuwania go
             nodeToRemove = successor;
@@ -277,3 +276,4 @@ void HashTable_RB::remove(int key)
         delete nodeToRemove;
     }
 }
+

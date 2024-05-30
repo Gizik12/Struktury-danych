@@ -60,4 +60,13 @@ public:
 
     virtual void remove(int key);
 };
+
+template <typename T>
+void swap(T& a, T& b)
+{
+    T temp = a;
+    a = b;
+    b = temp;
+}
+
 #endif
