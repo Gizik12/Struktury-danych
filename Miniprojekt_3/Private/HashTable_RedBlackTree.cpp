@@ -1,4 +1,4 @@
-#include "HashTable_RedBlackTree.h"
+#include "../Public/HashTable_RedBlackTree.h"
 
 
 // Funkcje klasy RBTreeNode
