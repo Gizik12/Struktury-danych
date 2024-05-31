@@ -59,6 +59,9 @@ public:
     virtual int search(int key) const override;
 
     virtual void remove(int key) override;
+
+    virtual HashTable_RB* copy() override;
+    RBTreeNode* copyTree(RBTreeNode* node);
 };
 
 template <typename T>

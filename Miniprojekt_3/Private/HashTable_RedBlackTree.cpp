@@ -277,3 +277,33 @@ void HashTable_RB::remove(int key)
         delete nodeToRemove;
     }
 }
+
+HashTable_RB* HashTable_RB::copy()
+{
+    HashTable_RB* newHashTable = new HashTable_RB(this->capacity);
+    for (int i = 0; i < this->capacity; ++i) {
+        RBTreeNode* root = this->hashTable[i]->getRoot();
+        RedBlackTree* newTree = new RedBlackTree();
+        newTree->setRoot(copyTree(root));
+        newHashTable->hashTable[i] = newTree;
+    }
+    return newHashTable;
+}
+
+RBTreeNode* HashTable_RB::copyTree(RBTreeNode* node)
+{
+    if (node == nullptr) {
+        return nullptr;
+    }
+    RBTreeNode* newNode = new RBTreeNode(node->key, node->value);
+    newNode->color = node->color;
+    newNode->left = copyTree(node->left);
+    if (newNode->left != nullptr) {
+        newNode->left->parent = newNode;
+    }
+    newNode->right = copyTree(node->right);
+    if (newNode->right != nullptr) {
+        newNode->right->parent = newNode;
+    }
+    return newNode;
+}

@@ -4,7 +4,7 @@
 #include "Public/HashTable_List.h"
 #include "Public/HashTable_RedBlackTree.h"
 #include "Public/HashTable_CuckooHashing.h"
-#include "DataGenerator.h"
+#include "DataGenerator/DataGenerator.h"
 
 using namespace std;
 
@@ -137,3 +137,4 @@ int main()
 
 	return 0;
 }
+//5000, 8000, 10000, 16000, 20000, 40000, 60000, 100000
