@@ -137,7 +137,11 @@ RedBlackTree::RedBlackTree()
 }
 void RedBlackTree::insert(const int& key, const int& value)
 {
-
+    RBTreeNode* existingNode = search(root, key);
+    if (existingNode != nullptr) {
+        // Jeśli klucz już istnieje, zignoruj próbę wstawienia
+        return;
+    }
     RBTreeNode* pt = new RBTreeNode(key, value);
     root = BSTInsert(root, pt);
     fixViolation(root, pt);
